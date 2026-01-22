@@ -1,4 +1,4 @@
-## Kanban Workflow
+## Kanban Desktop App
 
 ### Project Overview
 We aim to build a Kanban workflow board implemented either as a web application or a desktop application. This document specifies the core requirements and outlines the application architecture. As development progresses, a more rigid specification will be defined after a final platform decision is made.
@@ -32,5 +32,6 @@ We aim to build a Kanban workflow board implemented either as a web application 
 ### Communication
 - **Local HTTP/JSON** communication between the Electron UI and FastAPI  
   (`127.0.0.1:<port>`)
+
 
 
