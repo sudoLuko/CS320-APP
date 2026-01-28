@@ -1,4 +1,4 @@
-# Kanban Desktop App
+# KanFLOW - Kanban Desktop App
 
 A desktop Kanban board application built with Electron, React, and TypeScript.
 
@@ -57,6 +57,9 @@ React UI (renderer process)
 
 We are working in this repo as a team and will follow a structured workflow for managing our work.
 
+### TLDR
+Each feature will need to be developed and commited on its own branch before we merge it, via pull request, into `main`.
+
 ### Branch Protection
 The `main` branch is protected with the following rules:
 - All changes must be made through pull requests
@@ -97,4 +100,5 @@ See `/prof-instructions` for additional guidelines from course materials.
 ## Getting Started
 
 [Installation and development instructions to be added]
+
 
