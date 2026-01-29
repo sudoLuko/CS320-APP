@@ -8,6 +8,5 @@ Please contribute any material that you find pertinent.
 - Reference materials
 
 ## Contributing
-Add any relevant images or materials from class that would be helpful for studying or reference.
-
-Please add a descriptive filename to the image
+- Please add a descriptive filename to the image
+- Add any relevant images or materials from class that would be helpful for studying or reference.
