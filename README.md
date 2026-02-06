@@ -24,18 +24,19 @@ A desktop Kanban board application built with Electron, React, and TypeScript.
 ## Project Structure
 ```
 src/
-├── main/               # Electron main process (Node.js environment)
-│   ├── main.ts         # Application entry point, window management
-│   ├── database.ts     # SQLite database operations
-│   └── ipc-handlers.ts # IPC message handlers
+├── main/               # Backend (Node.js)
+│   ├── main.ts         # App entry, creates window
+│   ├── database.ts     # SQLite operations
+│   └── ipc-handlers.ts # Handles IPC messages from renderer
 │
-├── renderer/           # React UI (Browser environment)
-│   ├── App.tsx         # Root React component
+├── renderer/           # Frontend (React)
+│   ├── App.tsx         # Root component
 │   ├── components/     # Board, Column, Card components
-│   └── index.html      # HTML entry point
+│   ├── ipc.ts          # Wrapper for calling preload APIs
+│   └── index.html      # HTML entry
 │
 └── preload/            # Security bridge
-    └── preload.ts      # Exposes safe IPC APIs to renderer
+    └── preload.ts      # Exposes safe APIs to renderer
 ```
 
 ## Architecture
@@ -100,5 +101,6 @@ See `/prof-instructions` for additional guidelines from course materials.
 ## Getting Started
 
 [Installation and development instructions to be added]
+
 
 
