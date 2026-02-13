@@ -3,17 +3,17 @@
 ## Architecture Overview
 
 **Renderer (React UI)**  
-Displays the board, columns, and cards.  
-No direct access to the database or Node APIs.
+- Displays the board, columns, and cards.  
+- No direct access to the database or Node APIs.
 
 **Preload (Security Bridge)**  
-Exposes a safe, limited API to the renderer.
+- Exposes a safe, limited API to the renderer.
 
 **Main Process (Electron backend)**  
-Handles IPC calls and database logic.
+- Handles IPC calls and database logic.
 
 **SQLite Database**  
-Stores boards, columns, and cards locally.
+- Stores boards, columns, and cards locally.
 
 ---
 
