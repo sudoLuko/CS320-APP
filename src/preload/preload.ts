@@ -1,1 +1,0 @@
-// Security bridge - exposes safe APIs to renderer

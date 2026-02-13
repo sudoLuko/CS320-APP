@@ -1,1 +1,0 @@
-// Wrapper for calling electron APIs
