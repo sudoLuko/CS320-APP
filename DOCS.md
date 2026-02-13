@@ -17,8 +17,6 @@
 
 ---
 
-## Files to Create
-
 ### Backend (Main Process)
 
 **1. `src/main/database.ts`**
