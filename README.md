@@ -23,20 +23,28 @@ A desktop Kanban board application built with Electron, React, and TypeScript.
 
 ## Project Structure
 ```
-src/
-├── main/               # Backend (Node.js)
-│   ├── main.ts         # App entry, creates window
-│   ├── database.ts     # SQLite operations
-│   └── ipc-handlers.ts # Handles IPC messages from renderer
-│
-├── renderer/           # Frontend (React)
-│   ├── App.tsx         # Root component
-│   ├── components/     # Board, Column, Card components
-│   ├── ipc.ts          # Wrapper for calling preload APIs
-│   └── index.html      # HTML entry
-│
-└── preload/            # Security bridge
-    └── preload.ts      # Exposes safe APIs to renderer
+.
+├──src
+│  ├──main                    # Electron Main Process
+│  │  ├── main.ts             # App entry, creates window
+│  │  ├── database.ts         # SQLite operations
+│  │  ├── ipc-handlers.ts     # Handles IPC messages from renderer
+│  │  └──...
+│  ├──preload                 # Security bridge
+│  │  ├── preload.ts          # Exposes safe APIs to renderer
+│  │  └──...
+│  └──renderer                # with React UI
+│     │──src   
+│     │  ├── App.tsx          # Root component
+│     │  ├── components       # Board, Column, Card components
+│     │  ├── ipc.ts           # Wrapper for calling preload APIs
+│     │  ├── index.html       # HTML entry
+│     │  └──...
+│     │──index.html           # HTML template for Vite
+│     └──...
+├──electron.vite.config.ts    # Vite config for Electron
+├──package.json               # Project metadata and dependencies
+└──...
 ```
 
 ## Architecture
@@ -100,7 +108,15 @@ See `/prof-instructions` for additional guidelines from course materials.
 
 ## Getting Started
 
-[Installation and development instructions to be added]
+To run the app
+```bash
+   cd ./CS320-APP
+```
+
+```bash
+   npm install
+   npm run dev
+```
 
 
 
