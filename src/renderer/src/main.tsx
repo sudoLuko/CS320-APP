@@ -1,11 +1,16 @@
-import './assets/main.css'
+import React from 'react'
+import ReactDOM from 'react-dom/client'
+import Board from './components/Board'
+import Column from './components/Column'
+import Card from './components/Card'
 
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
-import App from './App'
 
-createRoot(document.getElementById('root')!).render(
-  <StrictMode>
-    <App />
-  </StrictMode>
+ReactDOM.createRoot(document.getElementById('root')!).render(
+  <React.StrictMode>
+    <div>
+      <Board/>
+      <Column />
+      <Card />
+    </div>
+  </React.StrictMode>
 )
