@@ -18,10 +18,13 @@ class DatabaseConnection {
         return DatabaseConnection.instance
     }
 
+    public query(SQL: string, params:Array<any>) {
+        return this.db.prepare(SQL).all(params)
+    }
 
-    
-
-
+    public execute(SQL: string, params: Array<any>) {
+        return this.db.prepare(SQL).run(params)
+    }
 
 
 }
