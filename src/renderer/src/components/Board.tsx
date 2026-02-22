@@ -1,10 +1,17 @@
-// produce a board HTML element
-export default class MyBoard {
+import ColumnView from './Column'
 
-	constructor(board_name) {
+export default class MyBoard {
+  	columns : ColumnView[]
+  	board_name : string
+
+	constructor(board_name: string, columns: ColumnView[]) {
 		this.board_name = board_name;
+    this.columns = columns;
 	}
-	
+  
+	addColumn(): void {}
+    delColumn(): void {}
+
 	static print_columns() {
 		return (
 			<div>
