@@ -2,7 +2,6 @@ import { app, shell, BrowserWindow, ipcMain } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
-import http from 'http';
 
 function createWindow(): void {
   // Create the browser window.
@@ -67,7 +66,6 @@ app.whenReady().then(() => {
 // explicitly with Cmd + Q.
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
-	//make sure to kill and spawned server processes so that there are not orphan processes after closing electron
     app.quit()
   }
 })
