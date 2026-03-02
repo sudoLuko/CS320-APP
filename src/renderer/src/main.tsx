@@ -6,8 +6,6 @@ import Card from './components/Card'
 
 //Constants for easier style prototyping
 const COLUMN_BORDER: string = "3px solid #ccc";
-const COLUMN_WIDTH: string = "200px";
-const COLUMN_HEIGHT: string = "300px";
 const COLUMN_TEXT_COLOR: string = "black";
 const COLUMN_FONT_WEIGHT: string = "bold";
 const COLUMN_BACKGROUND_COLOR: string = "white";
@@ -79,9 +77,9 @@ class MainView extends React.Component<MainViewProps, DisplayColProp> {
 
   render() {
     // convert to JSX
-    const coolCol = this.state.board.columns.map((col) => (
-      <div key={col.colID} style={{ border: COLUMN_BORDER, color: COLUMN_TEXT_COLOR, fontWeight: COLUMN_FONT_WEIGHT, backgroundColor: COLUMN_BACKGROUND_COLOR, fontSize: COLUMN_FONT_SIZE, paddingLeft: COLUMN_PADDING_LEFT, paddingRight: COLUMN_PADDING_RIGHT, width: COLUMN_WIDTH, height: COLUMN_HEIGHT }}>
-        {col.column_name}
+    const coolCol = this.state.cols.map((id) => (
+      <div key={id} style={{ border: COLUMN_BORDER, color: COLUMN_TEXT_COLOR, fontWeight: COLUMN_FONT_WEIGHT, backgroundColor: COLUMN_BACKGROUND_COLOR, fontSize: COLUMN_FONT_SIZE, paddingLeft: COLUMN_PADDING_LEFT, paddingRight: COLUMN_PADDING_RIGHT }}>
+        My Column #{id}
       </div>
     ))
 
@@ -99,3 +97,4 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
     <MainView board={new Board("board", [])} selectedCol={new Column("mainColumn", 0, [])} selectedCard={new Card(0, "", "starterCard")}/>
   </React.StrictMode>
 )
+
