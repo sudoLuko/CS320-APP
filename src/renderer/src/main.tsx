@@ -4,14 +4,38 @@ import Board from './components/Board'
 import Column from './components/Column'
 import Card from './components/Card'
 
+//Constants for easier style prototyping
+const COLUMN_BORDER: string = "3px solid #ccc";
+const COLUMN_WIDTH: string = "200px";
+const COLUMN_HEIGHT: string = "300px";
+const COLUMN_TEXT_COLOR: string = "black";
+const COLUMN_FONT_WEIGHT: string = "bold";
+const COLUMN_BACKGROUND_COLOR: string = "white";
+const COLUMN_FONT_STYLE: string = "normal";
+
+//single size to keep both button and column text the same size
+const COLUMN_BUTTON_SIZE: string = "200%";
+const COLUMN_FONT_SIZE: string = COLUMN_BUTTON_SIZE;
+const BUTTON_FONT_SIZE: string = COLUMN_BUTTON_SIZE;
+
+//single size to keep padding consistant
+const COLUMN_PADDING: string = "10px";
+const COLUMN_PADDING_LEFT: string = COLUMN_PADDING;
+const COLUMN_PADDING_RIGHT: string = COLUMN_PADDING;
+const COLUMN_PADDING_TOP: string = COLUMN_PADDING;
+const COLUMN_PADDING_BOTTOM: string = COLUMN_PADDING;
+
+//Cards
+
+
 type MainViewProps = {
   board: Board
   selectedCol: Column
   selectedCard: Card
 }
 
-type DisplayColProp = { // array for rendering columns
-  cols: number[]
+type DisplayColProp = { // render board state with columns
+  board: Board
 }
 
 class MainView extends React.Component<MainViewProps, DisplayColProp> {
@@ -25,7 +49,7 @@ class MainView extends React.Component<MainViewProps, DisplayColProp> {
     this.selectedCol = props.selectedCol
     this.selectedCard = props.selectedCard
     this.state = {
-      cols: [] // start with 1 column
+      board: this.board
     }
   }
 
@@ -35,36 +59,35 @@ class MainView extends React.Component<MainViewProps, DisplayColProp> {
 
   createCard(): void {}
 
-  addColumn(c: Column): void {
-    this.board = this.createBoard(this.board, c)
-  }
-
-
-  addCol = () => {
-    const currList = this.state.cols
+  addColumn(n: string): void {
+    const currList = this.state.board.columns
     const count = currList.length + 1
 
     // setup
     const newList = currList.slice() 
-    newList.push(count) // add col
+    newList.push(new Column(n, count, []))
 
     // render the new list
     this.setState({
-      cols: newList
+      board: new Board(this.state.board.board_name, newList)
     })
+  }
+
+  addCol = () => {
+    this.addColumn("newCol")
   }
 
   render() {
     // convert to JSX
-    const coolCol = this.state.cols.map((id) => (
-      <div key={id} style={{ border: "1px solid #ccc"}}>
-        My Column #{id}
+    const coolCol = this.state.board.columns.map((col) => (
+      <div key={col.colID} style={{ border: COLUMN_BORDER, color: COLUMN_TEXT_COLOR, fontWeight: COLUMN_FONT_WEIGHT, backgroundColor: COLUMN_BACKGROUND_COLOR, fontSize: COLUMN_FONT_SIZE, paddingLeft: COLUMN_PADDING_LEFT, paddingRight: COLUMN_PADDING_RIGHT, width: COLUMN_WIDTH, height: COLUMN_HEIGHT }}>
+        {col.column_name}
       </div>
     ))
 
     return (
-      <div style={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
-        <button onClick={this.addCol}>+</button>
+      <div style={{ display: "flex", flexDirection: "row", alignItems: "center",  }}>
+        <button style= {{fontSize: BUTTON_FONT_SIZE}} onClick={this.addCol}>+</button>
         {coolCol}
       </div>
     )
