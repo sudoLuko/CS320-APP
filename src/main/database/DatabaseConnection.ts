@@ -3,8 +3,8 @@ import Database from 'better-sqlite3';
 class DatabaseConnection {
 
     private static instance: DatabaseConnection;
-    private db: Database
-    private  dbPath: string;
+    private db: Database.Database
+    private dbPath: string;
 
     private constructor(dbPath: string) {
         this.dbPath = dbPath
@@ -59,7 +59,6 @@ class DatabaseConnection {
         `).run()
 
     }
-
     
     public static getInstance(dbPath: string) {
         if ( DatabaseConnection.instance == null ) {
@@ -68,31 +67,24 @@ class DatabaseConnection {
         return DatabaseConnection.instance
     }
 
-    public query(SQL: string, params:Array<any>) {
-        return this.db.prepare(SQL).all(params)
+    public query(SQL: string, params:Array<any> = []) {
+        return this.db.prepare(SQL).all(...params)
     }
 
-    public execute(SQL: string, params: Array<any>) {
-        return this.db.prepare(SQL).run(params)
+    public execute(SQL: string, params: Array<any> = []) {
+        return this.db.prepare(SQL).run(...params)
     }
 
-    public beginTransaction() {
-        this.db.prepare('BEGIN').run()
-    }
-
-    public commit() {
-        this.db.prepare('COMMIT').run()
-    }
-
-    public rollback() {
-        this.db.prepare('ROLLBACK').run()
-    }
+    public transaction<T>(fn: () => T): T {
+        const wrapped = this.db.transaction(fn);
+        return wrapped();
+    }   
 
     public close() {
         this.db.close()
     }
 
-}
+} export { DatabaseConnection };
 
 
 
