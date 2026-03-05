@@ -1,7 +1,7 @@
 import { DatabaseConnection } from './DatabaseConnection';
-import { Board } from '../../shared/types';
+import { Board, BoardExport } from '../../shared/types';
 
-class BoardRepository {
+export class BoardRepository {
     
     private db: DatabaseConnection
 
@@ -20,8 +20,8 @@ class BoardRepository {
         )
     }
 
-    public findByID(id: number) {
-        return this.db.query(`SELECT * FROM boards WHERE id = ?`, [id])
+    public findByID(board_id: number): Board{
+        return this.db.query(`SELECT * FROM boards WHERE id = ?`, [board_id])[0] as Board
     }
 
     public update(board: Board) {
@@ -34,8 +34,8 @@ class BoardRepository {
         )
     }
 
-    public delete(id: number) {
-        return this.db.execute(`DELETE FROM boards WHERE id = ?`, [id])
+    public delete(board_id: number) {
+        return this.db.execute(`DELETE FROM boards WHERE id = ?`, [board_id])
     }
 
 

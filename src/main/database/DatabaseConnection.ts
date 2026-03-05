@@ -59,6 +59,14 @@ class DatabaseConnection {
         `).run()
 
     }
+
+    // for testing only .. for use with temp databases
+    public static resetInstance(): void {
+        if (DatabaseConnection.instance) {
+            DatabaseConnection.instance.db.close()
+        }
+        DatabaseConnection.instance = null as any
+    }
     
     public static getInstance(dbPath: string) {
         if ( DatabaseConnection.instance == null ) {

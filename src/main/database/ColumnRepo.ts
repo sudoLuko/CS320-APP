@@ -1,7 +1,7 @@
 import { DatabaseConnection } from './DatabaseConnection';
 import { Column } from '../../shared/types';
 
-class ColumnRepository {
+export class ColumnRepository {
     
     private db: DatabaseConnection
 
@@ -24,8 +24,8 @@ class ColumnRepository {
         return this.db.query(`SELECT * FROM columns WHERE id = ?`, [column_id])
     }
 
-    public findByBoard(board_id: number) {
-        return this.db.query(`SELECT * FROM columns WHERE boardID = ?`, [board_id])
+    public findByBoard(board_id: number): Column[] {
+        return this.db.query(`SELECT * FROM columns WHERE boardID = ?`, [board_id]) as Column[]
     }
 
     public update(column: Column) {
