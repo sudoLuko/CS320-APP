@@ -1,7 +1,7 @@
 import { DatabaseConnection } from './DatabaseConnection';
 import { Card } from '../../shared/types';
 
-class CardRepository {
+export class CardRepository {
     
     private db: DatabaseConnection
 

@@ -25,3 +25,15 @@ export interface Card {
     position: number;
     columnID: number;
 }
+
+// Type definitions for JSON export feature
+// use: import { BoardExport, ColumnExport } from '../../shared/types'
+export interface BoardExport {
+    board: Board
+    columns: ColumnExport[],
+}
+
+export interface ColumnExport {
+    column: Column,
+    cards: Card[]
+}
