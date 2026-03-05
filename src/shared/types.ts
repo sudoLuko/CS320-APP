@@ -2,7 +2,7 @@
 // use: import { Card, Column, Board } from '../../shared/types'
 
 export interface Board {
-    id: string;
+    id: number;
     title: string;
     description: string;
     createdAt: number;
@@ -10,18 +10,18 @@ export interface Board {
 }
 
 export interface Column {
-    id: string;
+    id: number;
     title: string;
     createdAt: number;
     position: number;
-    boardID: string;
+    boardID: number;
 }
 
 export interface Card {
-    id: string;
+    id: number;
     title: string;
     description: string;
     createdAt: number;
     position: number;
-    columnID: string
+    columnID: number;
 }
