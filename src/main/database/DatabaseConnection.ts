@@ -43,6 +43,7 @@ class DatabaseConnection {
             position INTEGER,
             boardID INTEGER,
             FOREIGN KEY (boardID) REFERENCES boards(id)
+            UNIQUE(boardID, position)
             )
         `).run()
 
