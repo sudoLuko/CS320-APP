@@ -5,12 +5,12 @@ import { BoardExport, ColumnExport } from '../../shared/types'
 
 export function exportToJSON(board_id: number) {
 
-    const boardRepo = new BoardRepository();
-    const columnRepo = new ColumnRepository();
-    const cardRepo = new CardRepository();
+    const boardRepo = new BoardRepository()
+    const columnRepo = new ColumnRepository()
+    const cardRepo = new CardRepository()
 
-    let boardExp: BoardExport;
-    let columnExp: ColumnExport [] = [];
+    let boardExp: BoardExport
+    let columnExp: ColumnExport [] = []
 
     const columns = columnRepo.findByBoard(board_id)
 
@@ -25,5 +25,5 @@ export function exportToJSON(board_id: number) {
     }
 
     return JSON.stringify(boardExp, null, 2)
-    
+
 }
