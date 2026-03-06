@@ -1,5 +1,5 @@
 import { DatabaseConnection } from './DatabaseConnection';
-import { Board, BoardExport } from '../../shared/types';
+import { Board } from '../../shared/types';
 
 export class BoardRepository {
     

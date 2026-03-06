@@ -1,8 +1,7 @@
 // BoardRepo Structure Test
 // -    ensure that all values placed inside test Board are accurate
 // -    ensures that after an update() all values were correctly changed in the DB
-// -    these tests serve as a reference for me as I get comfortable with the testing framework
-// -    ( this testfile is not for credit )
+// -    these tests serve as a reference for me as I get comfortable with the testing framework ( this file is not for credit ) 
 
 
 import { setupTestDB } from './TestSetupDB'

@@ -1,12 +1,15 @@
 // Black Box Unit Tests:
 // -    This file tests the functionality of my Board Export feature (coolcam)
+// -    There are three tests present in this file:
+//      -   test if string is returned by JSON.stringify ( does not count toward total, tests package and not my work)
+//      -   ensure that JSON is correctly formatted after exportToJson() ( 9 assertions )
+//      -   ensure that JSON export can handle multiple columns and cards for one board ( 13 assertions )
 
 import { setupTestDB } from './TestSetupDB'
 import { exportToJSON } from '../Export'
 import { Column, Card } from '../../../shared/types';
 import { ColumnRepository } from '../ColumnRepo'
 import { CardRepository } from '../CardRepo'
-
 
 beforeEach(() => {
     setupTestDB()
@@ -89,5 +92,3 @@ test('handle an export with multiple columns and cards', () => {
     expect(parse.columns[2].cards[1].title).toBe("card2 - col 3")
 
 })
-
-
