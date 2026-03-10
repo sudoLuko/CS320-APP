@@ -26,17 +26,17 @@ test('ensure correctly formatted JSON', () => {
     // parse the contents of the JSON object and validate that board, column, and cards are present
     const parse = JSON.parse(json)
 
-    // validate board
+    // validate board information 
     expect(parse.board.title).toBe("board1")
     expect(parse.board.description).toBe("some test board1")
     expect(parse.board.userID).toBe(1)
 
-    // validate column
+    // validate column information  
     expect(parse.columns[0].column.title).toBe("column1")
     expect(parse.columns[0].column.position).toBe(1)
     expect(parse.columns[0].column.boardID).toBe(1)
 
-    // validate card
+    // validate card information
     expect(parse.columns[0].cards.length).toBe(1)
     expect(parse.columns[0].cards[0].title).toBe("card1")
     expect(parse.columns[0].cards[0].description).toBe("some test card1")
