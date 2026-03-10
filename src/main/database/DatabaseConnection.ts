@@ -18,7 +18,7 @@ class DatabaseConnection {
         this.db.prepare(`
             CREATE TABLE IF NOT EXISTS users (
             id INTEGER PRIMARY KEY,
-            created_at INTEGER,
+            createdAt INTEGER,
             username TEXT,
             password TEXT
             )
@@ -27,7 +27,7 @@ class DatabaseConnection {
         this.db.prepare(`
             CREATE TABLE IF NOT EXISTS boards (
             id INTEGER PRIMARY KEY,
-            created_at INTEGER,
+            createdAt INTEGER,
             title TEXT,
             description TEXT,
             userID INTEGER,
@@ -38,18 +38,19 @@ class DatabaseConnection {
         this.db.prepare(`
             CREATE TABLE IF NOT EXISTS columns (
             id INTEGER PRIMARY KEY,
-            created_at INTEGER,
+            createdAt INTEGER,
             title TEXT, 
             position INTEGER,
             boardID INTEGER,
             FOREIGN KEY (boardID) REFERENCES boards(id)
+            UNIQUE(boardID, position)
             )
         `).run()
 
         this.db.prepare(`
             CREATE TABLE IF NOT EXISTS cards (
             id INTEGER PRIMARY KEY,
-            created_at INTEGER,
+            createdAt INTEGER,
             title TEXT, 
             description TEXT,
             position INTEGER,
