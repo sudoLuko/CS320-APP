@@ -1,11 +1,12 @@
 //For testing. Will be moved into renderer
 
 //Brings in websocket from node.js
-const WebSocket = require('ws');
+import WebSocket from 'ws';
 
 //Create interface for getting stdin and out from user. Used for testing
 //client messages sent to server
-const readline = require("readline");
+import readline from 'readline';
+
 const rl = readline.createInterface({
 	input: process.stdin,
 	output: process.stdout
@@ -18,13 +19,29 @@ let socket = new WebSocket("ws://localhost:3050");
 //open the socket
 socket.onopen = function(e) {
 	//test qustions to test sending random data to the server
-	rl.question("What is your name ? ", function(name){
+	rl.question("Do you want to create a new account (new) or login (login) ", function(command){
+		
+		
+		
+		
+		
+		
+		
+		if (command === "new") {
+			
+			
+		}
+		
+		
+		
+		
+		else if (command === "login"
 		socket.send(`My name is: ${name}`);
 		rl.question("What year is it ? ", function(year){
 			socket.send(`It is the year: ${year}`);
-			//close interface for reading from stdin
+			close interface for reading from stdin
 			rl.close();
-			//close the connect and end the program
+			close the connect and end the program
 			socket.close();
 		});
 	});
