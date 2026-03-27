@@ -77,8 +77,8 @@ class MainView extends React.Component<MainViewProps, DisplayColProp> {
     currBoard[this.state.currI] = updatedBoard
 
     this.setState({
-      board: this.board.addColumn(newCol),
-      boardList: this.state.boardList.slice(),
+      board: updatedBoard,
+      boardList: currBoard,
       currI: this.state.currI
     })
   }
