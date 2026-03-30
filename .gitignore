@@ -12,3 +12,9 @@ build/
 
 # OS files
 .DS_Store
+
+#credentials for mariadb server
+src/main/credentials.json
+
+#python cache files
+__pycache__
