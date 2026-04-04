@@ -70,7 +70,7 @@ class MainView extends React.Component<MainViewProps, DisplayColProp> {
 
   addCol = () => {
     const colLength = this.state.board.columns.length
-    const newCol = new Column("" + colLength, 0, [])
+    const newCol = new Column("" + colLength, colLength, [])
 
     const currBoard = this.state.boardList.slice()
     const updatedBoard = currBoard[this.state.currI].addColumn(newCol)
@@ -94,7 +94,7 @@ class MainView extends React.Component<MainViewProps, DisplayColProp> {
     // select and add card
     const selectCol = currCol[colID]
     const cardLength = selectCol.cards.length
-    const newCard = new Card(cardLength, "", "")
+    const newCard = new Card(cardLength,cardLength, "", "")
   
     const newColumn = selectCol.addCard(newCard)
     currCol[colID] = newColumn
@@ -106,7 +106,7 @@ class MainView extends React.Component<MainViewProps, DisplayColProp> {
       currBoard.board_i
     )
   
-    currBoard[this.state.currI] = newBoard
+    boardArr[this.state.currI] = newBoard
   
     this.setState({
       board: newBoard,
@@ -125,15 +125,6 @@ class MainView extends React.Component<MainViewProps, DisplayColProp> {
   }
 
   render() {
-    // card JSX
-    const card = this.state.board.columns.map((col) => (
-      col.cards.map((card) => (
-        <div className="cardBlock" key={card.card_name}>
-          {/** METHOD TO NAME CARD */}
-          {card.card_name}
-        </div>
-      ))
-    ))
 
     // convert to JSX
     const coolCol = this.state.board.columns.map((col) => (
@@ -142,9 +133,13 @@ class MainView extends React.Component<MainViewProps, DisplayColProp> {
           {/** METHOD TO NAME COLUMN */}
           {col.colID}
           <button style={{ fontSize: "100%", marginBottom: "8px" }} onClick={() => this.createCard(col.colID)} type="button">+</button>
-          <div style={{ display: "flex", flexDirection: "column", gap: "8px" }} >
-            {card}
-          </div>
+          
+          {col.cards.map((card) => (
+            <div className="cardBlock" key={card.card_id}>
+              {card.card_id}
+            </div>
+          ))}
+
         </div>
       </div>
     ))
@@ -185,6 +180,6 @@ class MainView extends React.Component<MainViewProps, DisplayColProp> {
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <MainView board={new Board("board", [], [], 0)} selectedCol={new Column("mainColumn", 0, [])} selectedCard={new Card(0, "", "starterCard")}/>
+    <MainView board={new Board("board", [], [], 0)} selectedCol={new Column("mainColumn", 0, [])} selectedCard={new Card(0,0, "", "starterCard")}/>
   </React.StrictMode>
 )
