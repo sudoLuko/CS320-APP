@@ -42,7 +42,7 @@ class DatabaseConnection {
             title TEXT, 
             position INTEGER,
             boardID INTEGER,
-            FOREIGN KEY (boardID) REFERENCES boards(id)
+            FOREIGN KEY (boardID) REFERENCES boards(id) ON DELETE CASCADE
             UNIQUE(boardID, position)
             )
         `).run()
@@ -55,7 +55,7 @@ class DatabaseConnection {
             description TEXT,
             position INTEGER,
             columnID INTEGER,
-            FOREIGN KEY (columnID) REFERENCES columns(id)
+            FOREIGN KEY (columnID) REFERENCES columns(id) ON DELETE CASCADE
             )
         `).run()
 

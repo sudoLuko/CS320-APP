@@ -34,6 +34,10 @@ export class BoardRepository {
         )
     }
 
+    public findByUser(userID: number): Board[] {
+        return this.db.query(`SELECT * FROM boards WHERE userID = ?`, [userID]) as Board[]
+    }
+
     public delete(board_id: number) {
         return this.db.execute(`DELETE FROM boards WHERE id = ?`, [board_id])
     }
