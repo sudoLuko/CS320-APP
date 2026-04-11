@@ -156,7 +156,7 @@ class MainView extends React.Component<MainViewProps, DisplayColProp> {
 
         <div className="rightSide">
           <button style={{ fontSize: BUTTON_FONT_SIZE }} onClick={this.addBoard}>+</button>
-    
+          <button style={{ fontSize: BUTTON_FONT_SIZE }}>export</button>
           <div className="tabsView">
             {boardTabs}
           </div>
