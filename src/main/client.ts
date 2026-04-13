@@ -39,9 +39,9 @@ socket.onopen = function(e) {
 		socket.send(`My name is: ${name}`);
 		rl.question("What year is it ? ", function(year){
 			socket.send(`It is the year: ${year}`);
-			close interface for reading from stdin
+			//close interface for reading from stdin
 			rl.close();
-			close the connect and end the program
+			//close the connect and end the program
 			socket.close();
 		});
 	});

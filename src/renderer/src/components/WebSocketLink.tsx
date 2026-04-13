@@ -18,4 +18,16 @@ export default class WebSocket_Link {
 		return socket
 	}
 	
+	sendMessage (message: string, socket: WebSocket) { 
+		
+		socket.send("message");
+		
+	}
+	
+	closeConnection ( socket: WebSocket) {
+		
+		socket.close();
+		
+	}
+	
 }
