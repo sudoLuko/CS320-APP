@@ -1,5 +1,7 @@
 import { app, shell, BrowserWindow, ipcMain } from 'electron'
 import { join } from 'path'
+import { registerBoardHandlers, registerColumnHandlers, registerCardHandlers } from './ipc-handlers'
+import { DatabaseConnection } from './database/DatabaseConnection'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 
@@ -51,6 +53,13 @@ app.whenReady().then(() => {
 
   // IPC test
   ipcMain.on('ping', () => console.log('pong'))
+
+  // Initialize database and IPC handlers
+  const dbPath = join(app.getPath('userData'), 'kanflow.db')
+  DatabaseConnection.getInstance(dbPath)
+  registerBoardHandlers()
+  registerColumnHandlers()
+  registerCardHandlers()
 
   createWindow()
 

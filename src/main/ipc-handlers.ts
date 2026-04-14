@@ -19,7 +19,8 @@ export function registerBoardHandlers() {
             userID: board.userID
         }
 
-        return boardRepo.save(newBoard)
+        const result = boardRepo.save(newBoard)
+        return { ...newBoard, id: result.lastInsertRowid }
     })
 
     ipcMain.handle('board:getByUser', async(_event, userID) => {
@@ -70,7 +71,8 @@ export function registerColumnHandlers() {
             boardID: column.boardID
         }
 
-        return columnRepo.save(newColumn)
+        const result = columnRepo.save(newColumn)                                                                             
+        return { ...newColumn, id: result.lastInsertRowid }
     })
 
     ipcMain.handle('column:getByBoard', async(_event, boardID) => {
@@ -112,7 +114,8 @@ export function registerCardHandlers() {
             columnID: card.columnID
         }
 
-        return cardRepo.save(newCard)
+        const result = cardRepo.save(newCard)                                                                                 
+        return { ...newCard, id: result.lastInsertRowid }
     })
 
     ipcMain.handle('card:getByColumn', async(_event, columnID) => {
