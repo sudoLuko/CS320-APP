@@ -3,7 +3,9 @@ import ReactDOM from 'react-dom/client'
 import Board from './components/Board'
 import Column from './components/Column'
 import Card from './components/Card'
-import './assets/main.css'
+
+import './assets/main.css';
+//import { createBoard, getBoardsByUser, createColumn, getColumnsByBoard, createCard, getCardsByColumn } from './ipc'
 
 //Constants for easier style prototyping
 const COLUMN_BORDER: string = "3px solid #ccc";
@@ -15,7 +17,7 @@ const COLUMN_BACKGROUND_COLOR: string = "white";
 const COLUMN_FONT_STYLE: string = "normal";
 
 //single size to keep both button and column text the same size
-const COLUMN_BUTTON_SIZE: string = "200%";
+const COLUMN_BUTTON_SIZE: string = "150%";
 const COLUMN_FONT_SIZE: string = COLUMN_BUTTON_SIZE;
 const BUTTON_FONT_SIZE: string = COLUMN_BUTTON_SIZE;
 
@@ -36,10 +38,13 @@ type DisplayColProp = { // render board state with columns
   board: Board
   boardList: Board[]
   currI: number
+  colID: number
+  cardID: number
+  debugMsg: string
 }
 
 class MainView extends React.Component<MainViewProps, DisplayColProp> {
-  board: Board
+  board: Board 
   selectedCol: Column
   selectedCard: Card
 
@@ -54,6 +59,9 @@ class MainView extends React.Component<MainViewProps, DisplayColProp> {
       board: this.board,
       boardList: [],
       currI: 0,
+      colID: 0,
+      cardID: 0,
+      debugMsg: ''
     }
   }
 
@@ -65,22 +73,31 @@ class MainView extends React.Component<MainViewProps, DisplayColProp> {
       boardList: this.board.addBoard(newBoard).boards,
       currI: newBoard.board_i,
       board: newBoard,
+      debugMsg: "added board " + newBoard.board_name
     }))
   }
 
   addCol = () => {
-    const colLength = this.state.board.columns.length
-    const newCol = new Column("" + colLength, colLength, [])
+    if (this.state.boardList.length == 0) {
+      this.setState({
+        debugMsg: "no board to add column to"
+      })
+    } else {
+      
+      const colLength = this.state.board.columns.length
+      const newCol = new Column("" + colLength, colLength, [])
 
-    const currBoard = this.state.boardList.slice()
-    const updatedBoard = currBoard[this.state.currI].addColumn(newCol)
-    currBoard[this.state.currI] = updatedBoard
+      const currBoard = this.state.boardList.slice()
+      const updatedBoard = currBoard[this.state.currI].addColumn(newCol)
+      currBoard[this.state.currI] = updatedBoard
 
-    this.setState({
-      board: updatedBoard,
-      boardList: currBoard,
-      currI: this.state.currI
-    })
+      this.setState({
+        board: updatedBoard,
+        boardList: currBoard,
+        currI: this.state.currI,
+        debugMsg: "added column " + newCol.column_name
+      })
+    }
   }
 
   createCard = (colID: number) => {
@@ -111,16 +128,135 @@ class MainView extends React.Component<MainViewProps, DisplayColProp> {
     this.setState({
       board: newBoard,
       boardList: boardArr,
-      currI: this.state.currI
+      currI: this.state.currI,
+      debugMsg: "added card " + newCard.card_id
+    })
+  }
+
+  remCard = (colID: number, cardID: number) => {
+    const b = this.state.boardList.slice()
+    const currB = b[this.state.currI]
+    
+    const c = currB.columns.slice()
+    const currC = c[colID]
+    
+    // removes
+    currC.cards.splice(cardID, 1)
+    c[colID] = currC
+
+    // updates state
+    const newB = new Board(currB.board_name, c, currB.boards, currB.board_i)
+    b[this.state.currI] = newB
+
+    this.setState({
+      board: newB,
+      boardList: b,
+      currI: this.state.currI,
+      debugMsg: "removed card " + this.state.cardID 
+    })
+  }
+
+  dragStart = (e: any, card_id: number, colID: number) => {
+    e.dataTransfer.setData("card_id", card_id)
+    e.dataTransfer.setData("colID", colID)
+    // add card to column and update state
+    this.dragCard(colID, card_id)
+    this.setState({ debugMsg: "card " + card_id + " from column " + colID })
+  }
+
+  dragOver = (e: any) => {
+    e.preventDefault()
+  }
+
+  dropAddCard = (toCol: number) => {
+    // drop into
+    const b = this.state.boardList.slice()
+    const currB = b[this.state.currI]
+    
+    const c = currB.columns.slice()
+    const currC = c[toCol]
+    
+    // add
+    const cardID = currC.cards.length + 1
+    currC.cards.push(new Card(cardID, cardID, "dropped", "!"))
+    
+    // update col
+    c[toCol] = currC
+
+    // update board
+    const newB = new Board(currB.board_name, c, currB.boards, currB.board_i)
+    b[this.state.currI] = newB
+    
+    this.setState({
+      board: newB,
+      boardList: b,
+      currI: this.state.currI,
+      debugMsg: "card " + currC.cards[cardID].card_id + " added to column " + currC.column_name
+    })
+  }  
+
+  drop = (colID: number) => {
+    // remove card from column and update state
+    this.dropRemCard()
+    this.dropAddCard(colID)
+  }
+ 
+  dragCard = (colID: number, cardID: number) => {
+    // retrieve ids
+    this.setState({
+      colID: colID,
+      cardID: cardID
+    })
+  }
+
+  // add card to the column
+  dropRemCard = () => {
+    const b = this.state.boardList.slice()
+    const currB = b[this.state.currI]
+    
+    const c = currB.columns.slice()
+    const currC = c[this.state.colID]
+    
+    // removes
+    currC.cards.splice(this.state.cardID, 1)
+    c[this.state.colID] = currC
+
+    // updates state
+    const newB = new Board(currB.board_name, c, currB.boards, currB.board_i)
+    b[this.state.currI] = newB
+
+    this.setState({
+      board: newB,
+      boardList: b,
+      currI: this.state.currI,
     })
   }
   
-  selected(i: number): void {
+  export = () => {
+    this.setState({
+      board: this.state.board,
+      boardList: this.state.boardList,
+      currI: this.state.currI,
+      debugMsg: "exporting..."
+    })
+  }
+
+  login = () => {
+    this.setState({
+      board: this.state.board,
+      boardList: this.state.boardList,
+      currI: this.state.currI,
+      debugMsg: "logging in..."
+    })
+  }
+  
+  selected = (i: number) => {
     const selected = this.state.boardList[i]
             
       this.setState({
         currI: i,
         board: selected,
+        debugMsg: "selected board " + selected.board_name
       })
   }
 
@@ -130,13 +266,13 @@ class MainView extends React.Component<MainViewProps, DisplayColProp> {
     const coolCol = this.state.board.columns.map((col) => (
       <div className="tabRow" key={col.colID}>
         <div style={{ border: COLUMN_BORDER, width: COLUMN_WIDTH, height: COLUMN_HEIGHT, color: COLUMN_TEXT_COLOR, fontWeight: COLUMN_FONT_WEIGHT, backgroundColor: COLUMN_BACKGROUND_COLOR, fontSize: COLUMN_FONT_SIZE, paddingLeft: COLUMN_PADDING_LEFT, paddingRight: COLUMN_PADDING_RIGHT, paddingTop: COLUMN_PADDING_TOP, paddingBottom: COLUMN_PADDING_BOTTOM }}>
-          {/** METHOD TO NAME COLUMN */}
-          {col.colID}
+          <input type="text" placeholder = 'name your column'style = {{ width: "100%" }}></input>
           <button style={{ fontSize: "100%", marginBottom: "8px" }} onClick={() => this.createCard(col.colID)} type="button">+</button>
           
           {col.cards.map((card) => (
-            <div className="cardBlock" key={card.card_id}>
-              {card.card_id}
+            <div draggable = "true" className="cardBlock" key={card.card_id} onDragStart={(e) => this.dragStart(e, card.card_id, col.colID)} onDragOver={(e) => this.dragOver(e)} onDrop={() => this.drop(col.colID)}>
+              <button style={{ fontSize: "100%", marginBottom: "8px" }} onClick={() => this.remCard(col.colID, card.card_id)} type="button">-</button>
+              <input type="text" placeholder = 'describe task' style = {{ width: "100%" }}></input>
             </div>
           ))}
 
@@ -145,9 +281,9 @@ class MainView extends React.Component<MainViewProps, DisplayColProp> {
     ))
 
     const boardTabs = this.state.boardList.map((b, i) => (
-      <button key={b.board_i} className="cardBlock" onClick={() => this.selected(i)} type="button">
-        { b.board_i }
-        {/** METHOD TO NAME BOARD */}
+      <button key={b.board_i} className="cardBlock" onClick={() => {this.selected(i), console.log("")}} type="button">
+       
+        <input type="text" placeholder='name your board' style = {{ width: "100%" }}></input>
       </button>
     ))
 
@@ -156,7 +292,12 @@ class MainView extends React.Component<MainViewProps, DisplayColProp> {
 
         <div className="rightSide">
           <button style={{ fontSize: BUTTON_FONT_SIZE }} onClick={this.addBoard}>+</button>
-          <button style={{ fontSize: BUTTON_FONT_SIZE }}>export</button>
+          <button style={{ fontSize: BUTTON_FONT_SIZE }} onClick={() => {this.export()}}>export</button>
+          <button style={{ fontSize: BUTTON_FONT_SIZE }} onClick={() => {this.login()}}>login</button>
+          
+          <div>
+            <text>log: {this.state.debugMsg} </text>
+          </div>
           <div className="tabsView">
             {boardTabs}
           </div>
@@ -166,7 +307,6 @@ class MainView extends React.Component<MainViewProps, DisplayColProp> {
         <div className="leftSide">
           <button style={{ fontSize: BUTTON_FONT_SIZE }} onClick={this.addCol}>+</button>
           <div style={{ fontWeight: 'bold', marginBottom: '12px' }}>
-            {this.state.board.board_name}
           </div>
           <div style={{display: "flex"}}>
             {coolCol}
