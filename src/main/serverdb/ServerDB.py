@@ -41,17 +41,17 @@ def insert(MDB, command):
 	MDB["conn"].commit()
 	return MDB
 	
-def add_user(MDB, username, password):
-	MDB["cursor"].execute('INSERT INTO Users (usernames, passwords) VALUES (%s, %s)', (username, password))
+def add_user(MDB, username, password, firstname, lastname):
+	MDB["cursor"].execute('INSERT INTO Users (username, password, firstname, lastname) VALUES (%s, %s, %s, %s)', (username, password, firstname, lastname))
 	MDB["conn"].commit()
 	return MDB
 
 def search_user(MDB, username):
-	MDB["cursor"].execute('SELECT * FROM Users WHERE usernames = %s', (username,))
+	MDB["cursor"].execute('SELECT * FROM Users WHERE username = %s', (username,))
 	return MDB
 	
 def delete_user(MDB, username):
-	MDB["cursor"].execute('DELETE FROM Users WHERE usernames = %s', (username,))
+	MDB["cursor"].execute('DELETE FROM Users WHERE username = %s', (username,))
 	MDB["conn"].commit()
 	return MDB
 
@@ -61,3 +61,11 @@ def is_connected(MDB):
     except:
         return False
     return True
+
+#Used for resetting KANFLOW database to default empty comfiguration.
+#Should not really be used, mostly here to keep track for the
+#needed reset commands
+def reset_KANFLOW(MDB):
+	MDB["cursor"].execute("DROP TABLE Users")
+	MDB["cursor"].execute("CREATE TABLE Users(nid int unsigned auto_increment, username nvarchar(128) not null, password nvarchar(128) not null, firstname nvarchar(128) not null, lastname nvarchar(128) not null, primary key(nid), unique key(username))")
+	MDB["conn"].commit()

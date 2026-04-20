@@ -5,6 +5,7 @@ import Column from './components/Column'
 import Card from './components/Card'
 import Accounts from './components/Accounts'
 import WebSocketLink from './components/WebSocketLink'
+//import WebSocket from 'ws';
 
 
 import './assets/main.css';
@@ -45,6 +46,16 @@ type DisplayColProp = { // render board state with columns
   cardID: number
   debugMsg: string
 }
+
+//create a single websocket descritpion, since you should only need one
+let newLink = new WebSocketLink("192.168.1.60", "3050");
+
+//example of json files to send to server (create account, login, etc)
+//temporary till login window is implemented
+const x = { "command":"create_account", "code": { "username": "myusername", "password": "password1234", "firstname":"Myfirstnamev", "lastname":"Mylastname"}}
+//const x = { "command":"login", "code": { "username": "myusername", "password": "password1234"}}
+
+
 
 class MainView extends React.Component<MainViewProps, DisplayColProp> {
   board: Board 
@@ -245,11 +256,17 @@ class MainView extends React.Component<MainViewProps, DisplayColProp> {
   }
 
   login = () => {
+	  
+	  //replace x here with inputs from user
+	  newLink.sendMessage(JSON.stringify(x));
     this.setState({
       board: this.state.board,
       boardList: this.state.boardList,
       currI: this.state.currI,
       debugMsg: "logging in..."
+      
+      
+      
     })
   }
   
