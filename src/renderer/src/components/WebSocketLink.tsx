@@ -25,10 +25,12 @@ export default class WebSocketLink {
 		//	socket.close();
 		//}
 		
-		this.socket.addEventListener("open", () => {
-			this.socket.send(`test electron`);
-			this.socket.close();
-		});
+		//this.socket.addEventListener("open", () => {
+		//	this.socket.send(`test electron`);
+			//this.socket.close();
+		//});
+		
+		this.settupWebSocket();
 		
 		
 
@@ -39,6 +41,37 @@ export default class WebSocketLink {
 		
 		
 	}
+	
+	
+	
+	settupWebSocket() {
+		
+		//settup event to send message once the websocket has open
+		this.socket.addEventListener("open", () => {
+			this.socket.send(`test electron`);
+			//this.socket.close();
+		});
+		
+		//console.log("test");
+		
+		//settup event to send message once the websocket has open
+		this.socket.addEventListener("message", (e) => {
+			//this.socket.send(`test electron`);
+			console.log(e.data);
+			this.socket.close();
+		});
+		
+		
+		
+		
+	}
+	
+	
+	
+	
+	
+	//settups event handlers for the websocket
+	
 	
 	sendMessage (message: string, socket: WebSocket) { 
 		

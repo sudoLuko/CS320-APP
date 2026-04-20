@@ -2,7 +2,7 @@
 
 import json
 #from serverdb.ServerDB import ServerDB
-import ServerDB
+from serverdb import ServerDB
 
 def create_new_user(MDB, code):
 	
@@ -25,7 +25,7 @@ def create_new_user(MDB, code):
 		return(1, MDB)
 		
 	#If no such user exists, then create the new user and return with success
-	MDB = ServerDB.add_user(MDB, code["username"], code["password"])
+	MDB = ServerDB.add_user(MDB, code["username"], code["password"], code["firstname"], code["lastname"])
 	return (0, MDB)
 
 def login_to_user(MDB, code):
@@ -39,9 +39,9 @@ def login_to_user(MDB, code):
 	
 	#check if password matches for user
 	results = MDB["cursor"].fetchone()
-	#if successfull, then return with results
-	if results[1] == code["password"]:
-		return (0, MDB)
+	#if successfull, then return with firstname and lastname
+	if results[2] == code["password"]:
+		return (0, (MDB, results[3], results[4]))
 	#otherwise, return with a, error code
 	else:
 		return (1, MDB)
