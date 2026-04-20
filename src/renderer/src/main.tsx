@@ -48,7 +48,7 @@ type DisplayColProp = { // render board state with columns
 }
 
 //create a single websocket descritpion, since you should only need one
-let newLink = new WebSocketLink("192.168.1.50", "3050");
+let newLink = new WebSocketLink("192.168.1.60", "3050");
 
 //example of json files to send to server (create account, login, etc)
 //temporary till login window is implemented
