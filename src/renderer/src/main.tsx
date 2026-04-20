@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom/client'
 import Board from './components/Board'
 import Column from './components/Column'
 import Card from './components/Card'
-import Account from './components/Account'
+import Accounts from './components/Accounts'
 import WebSocketLink from './components/WebSocketLink'
 
 
