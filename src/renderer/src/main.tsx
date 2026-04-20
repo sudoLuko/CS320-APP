@@ -47,12 +47,12 @@ type DisplayColProp = { // render board state with columns
   debugMsg: string
 }
 
-const socket = new WebSocket("ws://192.168.1.60:3050");
+//const socket = new WebSocket("ws://192.168.1.60:3050");
 
-socket.onopen = function(e) {
-	socket.send(`test electron`);
-	socket.close();
-}
+//socket.onopen = function(e) {
+//	socket.send(`test electron`);
+//	socket.close();
+//}
 
 class MainView extends React.Component<MainViewProps, DisplayColProp> {
   board: Board 
@@ -253,7 +253,7 @@ class MainView extends React.Component<MainViewProps, DisplayColProp> {
   }
 
   login = () => {
-	  let newLink = new WebSocketLink("localhost", "3050");
+	  let newLink = new WebSocketLink("192.168.1.60", "3050");
 	  let socket = newLink.createConnnection();
 	  //WebSocketLink.sendMessage("testing", socket);
 	  
@@ -261,7 +261,7 @@ class MainView extends React.Component<MainViewProps, DisplayColProp> {
       board: this.state.board,
       boardList: this.state.boardList,
       currI: this.state.currI,
-      debugMsg: "logging in..." + socket
+      debugMsg: "logging in..."
       
       
       

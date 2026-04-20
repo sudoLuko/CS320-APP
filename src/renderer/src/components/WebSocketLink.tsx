@@ -17,16 +17,18 @@ export default class WebSocketLink {
 	createConnnection() {
 		
 		//let socket = new WebSocket("ws://" + this.ipAdress + ":" this.port);
-		console.log("test");
-		//const socket = new WebSocket("ws://localhost:3050");
+		//console.log("test");
+		const socket = new WebSocket("ws://192.168.1.60:3050");
 		
-		//socket.addEventListener("open", (event) => {
-		//	socket.send("Hello Server!");
-		//}
+		socket.onopen = function(e) {
+	socket.send(`test electron`);
+	socket.close();
+}
+		
 
-		//return socket;
+		return socket;
 		
-		return "ab";
+		//return "ab";
 		
 		
 		
@@ -44,4 +46,10 @@ export default class WebSocketLink {
 		
 	}
 	
+	
+
+	
+	
+		
 }
+
