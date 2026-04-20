@@ -3,6 +3,9 @@ import ReactDOM from 'react-dom/client'
 import Board from './components/Board'
 import Column from './components/Column'
 import Card from './components/Card'
+import Account from './components/Account'
+import WebSocketLink from './components/WebSocketLink'
+
 
 import './assets/main.css';
 //import { createBoard, getBoardsByUser, createColumn, getColumnsByBoard, createCard, getCardsByColumn } from './ipc'

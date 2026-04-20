@@ -1,7 +1,7 @@
 //Brings in websocket from node.js
 import WebSocket from 'ws';
 
-export default class WebSocket_Link {
+export default class WebSocketLink {
 	
 	ipAddress: string
   	port: string
