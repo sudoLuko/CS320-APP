@@ -5,6 +5,7 @@ import Column from './components/Column'
 import Card from './components/Card'
 import Accounts from './components/Accounts'
 import WebSocketLink from './components/WebSocketLink'
+//import WebSocket from 'ws';
 
 
 import './assets/main.css';
@@ -44,6 +45,13 @@ type DisplayColProp = { // render board state with columns
   colID: number
   cardID: number
   debugMsg: string
+}
+
+const socket = new WebSocket("ws://192.168.1.60:3050");
+
+socket.onopen = function(e) {
+	socket.send(`test electron`);
+	socket.close();
 }
 
 class MainView extends React.Component<MainViewProps, DisplayColProp> {
@@ -245,11 +253,18 @@ class MainView extends React.Component<MainViewProps, DisplayColProp> {
   }
 
   login = () => {
+	  let newLink = new WebSocketLink("localhost", "3050");
+	  let socket = newLink.createConnnection();
+	  //WebSocketLink.sendMessage("testing", socket);
+	  
     this.setState({
       board: this.state.board,
       boardList: this.state.boardList,
       currI: this.state.currI,
-      debugMsg: "logging in..."
+      debugMsg: "logging in..." + socket
+      
+      
+      
     })
   }
   

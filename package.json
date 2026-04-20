@@ -25,7 +25,10 @@
     "@electron-toolkit/preload": "^3.0.2",
     "@electron-toolkit/utils": "^4.0.0",
     "better-sqlite3": "^12.6.2",
-    "electron-updater": "^6.3.9"
+    "electron-updater": "^6.3.9",
+    "install": "^0.13.0",
+    "websocket": "^1.0.35",
+    "ws": "^8.20.0"
   },
   "devDependencies": {
     "@electron-toolkit/eslint-config-prettier": "^3.0.0",
@@ -40,6 +43,7 @@
     "electron": "^39.2.6",
     "electron-builder": "^26.0.12",
     "electron-vite": "^5.0.0",
+    "esbuild": "^0.28.0",
     "eslint": "^9.39.1",
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^7.0.1",

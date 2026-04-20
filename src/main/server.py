@@ -7,11 +7,11 @@ import json
 #from serverdb.ServerDB import ServerDB
 from serverdb import ServerDB
 
-serverCrFile = open("credentials.json")
-serverCR = json.load(serverCrFile)
+#serverCrFile = open("credentials.json")
+#serverCR = json.load(serverCrFile)
 #print(serverCR["username"])
 
-MDB = ServerDB.startconnection(serverCR)
+#MDB = ServerDB.startconnection(serverCR)
 
 #print(MDB["cursor"])
 
@@ -26,7 +26,7 @@ async def echo(websocket):
 		await websocket.send(message)
 		
 async def main():
-	async with websockets.serve(echo, "localhost", 3050):
+	async with websockets.serve(echo, "0.0.0.0", 3050):
 		await asyncio.Future() # run forever
 		
 asyncio.run(main())
