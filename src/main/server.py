@@ -30,32 +30,34 @@ if e == 1:
 	print(MDB)
 	exit()
 
+#print(MDB)
+
 #print(MDB["cursor"])
 
-if y["command"] == "create_account":
-	(e, MDB) = Parshing.create_new_user(MDB, y["code"])
-	if e == 4:
-		print("MariaDB error, lost connect to MariaDB")
-		exit()
-	elif e == 1:
-		print("The specfied username is alread in use. Please choose a different username")
-	elif e == 0:
-		print("Successfully added user to database")
-	else:
-		print("Error code not implemented")
+# if y["command"] == "create_account":
+	# (e, MDB) = Parshing.create_new_user(MDB, y["code"])
+	# if e == 4:
+		# print("MariaDB error, lost connect to MariaDB")
+		# exit()
+	# elif e == 1:
+		# print("The specfied username is alread in use. Please choose a different username")
+	# elif e == 0:
+		# print("Successfully added user to database")
+	# else:
+		# print("Error code not implemented")
 		
-if y["command"] == "login":
-	(e, MDB) = Parshing.login_to_user(MDB, y["code"])
-	if e == 2:
-		print("The specfied username does not exist")
-	if e == 1:
-		print("password does not match for user")
-	elif e == 0:
-		(MDB, firstname, lastname) = MDB
-		print("Successfully logged into user")
-		print("Firstname: " + firstname + ", Lastname: " + lastname)
-	else:
-		print("Error code not implemented")
+# if y["command"] == "login":
+	# (e, MDB) = Parshing.login_to_user(MDB, y["code"])
+	# if e == 2:
+		# print("The specfied username does not exist")
+	# if e == 1:
+		# print("password does not match for user")
+	# elif e == 0:
+		# (MDB, firstname, lastname) = MDB
+		# print("Successfully logged into user")
+		# print("Firstname: " + firstname + ", Lastname: " + lastname)
+	# else:
+		# print("Error code not implemented")
 		
 
 #MDB = ServerDB.closeconnection(MDB)
@@ -64,6 +66,8 @@ if y["command"] == "login":
 
 async def echo(websocket):
 	async for message in websocket:
+		global MDB
+		print(message)
 		y = json.loads(message)
 		if y["command"] == "create_account":
 			(e, MDB) = Parshing.create_new_user(MDB, y["code"])
@@ -71,24 +75,23 @@ async def echo(websocket):
 				print("MariaDB error, lost connect to MariaDB")
 				exit()
 			elif e == 1:
-				print("The specfied username is alread in use. Please choose a different username")
+				response = "The specfied username is alread in use. Please choose a different username"
 			elif e == 0:
-				print("Successfully added user to database")
+				response = "Successfully added user to database"
 			else:
 				print("Error code not implemented")	
 		elif y["command"] == "login":
 			(e, MDB) = Parshing.login_to_user(MDB, y["code"])
 			if e == 2:
-				print("The specfied username does not exist")
+				response = "The specfied username does not exist"
 			if e == 1:
-				print("password does not match for user")
+				response = "password does not match for user"
 			elif e == 0:
 				(MDB, firstname, lastname) = MDB
-				print("Successfully logged into user")
-				print("Firstname: " + firstname + ", Lastname: " + lastname)
+				response = "Successfully logged into user\nFirstname: " + firstname + ", Lastname: " + lastname
 			else:
 				print("Error code not implemented")
-		await websocket.send(message)
+		await websocket.send(response)
 		
 async def main():
 	async with websockets.serve(echo, "0.0.0.0", 3050):

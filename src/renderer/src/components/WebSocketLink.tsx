@@ -14,7 +14,7 @@ export default class WebSocketLink {
 		this.port = port;
 	}
 	
-	createConnnection() {
+	createConnnection(message: string) {
 		
 		this.socket = new WebSocket("ws://" + this.ipAddress + ":" + this.port);
 		//console.log("test");
@@ -30,7 +30,7 @@ export default class WebSocketLink {
 			//this.socket.close();
 		//});
 		
-		this.settupWebSocket();
+		this.settupWebSocket(message);
 		
 		
 
@@ -44,11 +44,11 @@ export default class WebSocketLink {
 	
 	
 	
-	settupWebSocket() {
+	settupWebSocket(message: string) {
 		
 		//settup event to send message once the websocket has open
 		this.socket.addEventListener("open", () => {
-			this.socket.send(`test electron`);
+			this.socket.send(message);
 			//this.socket.close();
 		});
 		
@@ -57,7 +57,7 @@ export default class WebSocketLink {
 		//settup event to send message once the websocket has open
 		this.socket.addEventListener("message", (e) => {
 			//this.socket.send(`test electron`);
-			console.log(e.data);
+			alert(e.data);
 			this.socket.close();
 		});
 		
@@ -73,9 +73,9 @@ export default class WebSocketLink {
 	//settups event handlers for the websocket
 	
 	
-	sendMessage (message: string, socket: WebSocket) { 
+	sendMessage (message: string) { 
 		
-		socket.send(message);
+		this.createConnnection(message);
 		
 	}
 	
