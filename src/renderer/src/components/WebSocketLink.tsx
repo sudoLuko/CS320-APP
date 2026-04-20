@@ -7,26 +7,32 @@ export default class WebSocketLink {
 	
 	ipAddress: string
   	port: string
-  	//socket: WebSocket
+  	socket: WebSocket
 
-	constructor(ipAdress: string, port) {
-		this.ipAdress = ipAdress;
+	constructor(ipAddress: string, port) {
+		this.ipAddress = ipAddress;
 		this.port = port;
 	}
 	
 	createConnnection() {
 		
-		//let socket = new WebSocket("ws://" + this.ipAdress + ":" this.port);
+		this.socket = new WebSocket("ws://" + this.ipAddress + ":" + this.port);
 		//console.log("test");
-		const socket = new WebSocket("ws://192.168.1.60:3050");
+		//const socket = new WebSocket("ws://192.168.1.60:3050");
 		
-		socket.onopen = function(e) {
-	socket.send(`test electron`);
-	socket.close();
-}
+		//socket.onopen = function(e) {
+		//	socket.send(`test electron`);
+		//	socket.close();
+		//}
+		
+		this.socket.addEventListener("open", () => {
+			this.socket.send(`test electron`);
+			this.socket.close();
+		});
+		
 		
 
-		return socket;
+		//return socket;
 		
 		//return "ab";
 		
@@ -45,7 +51,6 @@ export default class WebSocketLink {
 		socket.close();
 		
 	}
-	
 	
 
 	

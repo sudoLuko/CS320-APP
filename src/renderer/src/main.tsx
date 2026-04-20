@@ -47,6 +47,8 @@ type DisplayColProp = { // render board state with columns
   debugMsg: string
 }
 
+let newLink = new WebSocketLink("192.168.1.60", "3050");
+
 //const socket = new WebSocket("ws://192.168.1.60:3050");
 
 //socket.onopen = function(e) {
@@ -253,8 +255,8 @@ class MainView extends React.Component<MainViewProps, DisplayColProp> {
   }
 
   login = () => {
-	  let newLink = new WebSocketLink("192.168.1.60", "3050");
-	  let socket = newLink.createConnnection();
+	  //let newLink = new WebSocketLink("192.168.1.60", "3050");
+	  newLink.createConnnection();
 	  //WebSocketLink.sendMessage("testing", socket);
 	  
     this.setState({
