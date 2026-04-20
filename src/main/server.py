@@ -67,7 +67,7 @@ if e == 1:
 async def echo(websocket):
 	async for message in websocket:
 		global MDB
-		print(message)
+		#print(message)
 		y = json.loads(message)
 		if y["command"] == "create_account":
 			(e, MDB) = Parshing.create_new_user(MDB, y["code"])
