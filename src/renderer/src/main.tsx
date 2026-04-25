@@ -3,17 +3,13 @@ import ReactDOM from 'react-dom/client'
 import Board from './components/Board'
 import Column from './components/Column'
 import Card from './components/Card'
-import Accounts from './components/Accounts'
-import WebSocketLink from './components/WebSocketLink'
-//import WebSocket from 'ws';
-
 
 import './assets/main.css';
-//import { createBoard, getBoardsByUser, createColumn, getColumnsByBoard, createCard, getCardsByColumn } from './ipc'
+// import { createBoard, getBoardsByUser, createColumn, getColumnsByBoard, createCard, getCardsByColumn } from './ipc'
 
 //Constants for easier style prototyping
-const COLUMN_BORDER: string = "3px solid #ccc";
-const COLUMN_WIDTH: string = "200px";
+const COLUMN_BORDER: string = "1px solid #d6d6d6";
+const COLUMN_WIDTH: string = "240px";
 const COLUMN_HEIGHT: string = "100vh";
 const COLUMN_TEXT_COLOR: string = "black";
 const COLUMN_FONT_WEIGHT: string = "bold";
@@ -26,7 +22,7 @@ const COLUMN_FONT_SIZE: string = COLUMN_BUTTON_SIZE;
 const BUTTON_FONT_SIZE: string = COLUMN_BUTTON_SIZE;
 
 //single size to keep padding consistant
-const COLUMN_PADDING: string = "10px";
+const COLUMN_PADDING: string = "12px";
 const COLUMN_PADDING_LEFT: string = COLUMN_PADDING;
 const COLUMN_PADDING_RIGHT: string = COLUMN_PADDING;
 const COLUMN_PADDING_TOP: string = COLUMN_PADDING;
@@ -45,17 +41,14 @@ type DisplayColProp = { // render board state with columns
   colID: number
   cardID: number
   debugMsg: string
+  logInState: string
+  successMsg: string
+  username: string
+  email: string
+  password: string
+  demo1: number
+  demo2: number
 }
-
-//create a single websocket descritpion, since you should only need one
-let newLink = new WebSocketLink("192.168.1.60", "3050");
-
-//example of json files to send to server (create account, login, etc)
-//temporary till login window is implemented
-const x = { "command":"create_account", "code": { "username": "myusername", "password": "password1234", "firstname":"Myfirstnamev", "lastname":"Mylastname"}}
-//const x = { "command":"login", "code": { "username": "myusername", "password": "password1234"}}
-
-
 
 class MainView extends React.Component<MainViewProps, DisplayColProp> {
   board: Board 
@@ -75,7 +68,14 @@ class MainView extends React.Component<MainViewProps, DisplayColProp> {
       currI: 0,
       colID: 0,
       cardID: 0,
-      debugMsg: ''
+      debugMsg: '',
+      logInState: '',
+      successMsg: '',
+      username: '',
+      email: '',
+      password: '',
+      demo1: 0,
+      demo2: 0
     }
   }
 
@@ -256,28 +256,66 @@ class MainView extends React.Component<MainViewProps, DisplayColProp> {
   }
 
   login = () => {
-	  
-	  //replace x here with inputs from user
-	  newLink.sendMessage(JSON.stringify(x));
     this.setState({
       board: this.state.board,
       boardList: this.state.boardList,
       currI: this.state.currI,
-      debugMsg: "logging in..."
-      
-      
-      
+      logInState: "login",
+      debugMsg: "logging in..." + this.state.email + this.state.password
     })
+  }
+
+  signUp = () => {
+    this.setState({
+      board: this.state.board,
+      boardList: this.state.boardList,
+      currI: this.state.currI,
+      logInState: "signUp",
+      debugMsg: "signing up..." + this.state.email + this.state.password + this.state.username
+    })
+  }
+
+  sbmtCredentials = () => {
+    if (this.state.logInState == "login") {
+      if (this.state.demo1 == 0) {
+        this.setState({
+          successMsg: this.state.username,
+          demo1: 1,
+          debugMsg: "account created!" + this.state.username + this.state.email + this.state.password
+        })
+      } else {
+        this.setState({
+          successMsg: this.state.username,
+          demo1: 0,
+          debugMsg: "account already exists!" + this.state.username + this.state.email + this.state.password
+        })
+      }
+    }
+    if (this.state.logInState == "signUp") {
+      if (this.state.demo2 == 0) {
+        this.setState({
+          successMsg: this.state.username,
+          demo2: 1,
+          debugMsg: "logged in!" + this.state.username + this.state.email + this.state.password
+        }) 
+      } else {
+        this.setState({
+          successMsg: this.state.username,
+          demo2: 0,
+          debugMsg: "account does not exist!" + this.state.username + this.state.email + this.state.password
+        })
+      }
+    }
   }
   
   selected = (i: number) => {
     const selected = this.state.boardList[i]
             
-      this.setState({
-        currI: i,
-        board: selected,
-        debugMsg: "selected board " + selected.board_name
-      })
+    this.setState({
+      currI: i,
+      board: selected,
+      debugMsg: "selected board " + selected.board_name
+    })
   }
 
   render() {
@@ -285,45 +323,69 @@ class MainView extends React.Component<MainViewProps, DisplayColProp> {
     // convert to JSX
     const coolCol = this.state.board.columns.map((col) => (
       <div className="tabRow" key={col.colID}>
+        <input type="text" placeholder = 'name your column'style = {{ width: "100%" }}></input>
         <div style={{ border: COLUMN_BORDER, width: COLUMN_WIDTH, height: COLUMN_HEIGHT, color: COLUMN_TEXT_COLOR, fontWeight: COLUMN_FONT_WEIGHT, backgroundColor: COLUMN_BACKGROUND_COLOR, fontSize: COLUMN_FONT_SIZE, paddingLeft: COLUMN_PADDING_LEFT, paddingRight: COLUMN_PADDING_RIGHT, paddingTop: COLUMN_PADDING_TOP, paddingBottom: COLUMN_PADDING_BOTTOM }}>
-          <input type="text" placeholder = 'name your column'style = {{ width: "100%" }}></input>
           <button style={{ fontSize: "100%", marginBottom: "8px" }} onClick={() => this.createCard(col.colID)} type="button">+</button>
           
           {col.cards.map((card) => (
             <div draggable = "true" className="cardBlock" key={card.card_id} onDragStart={(e) => this.dragStart(e, card.card_id, col.colID)} onDragOver={(e) => this.dragOver(e)} onDrop={() => this.drop(col.colID)}>
               <button style={{ fontSize: "100%", marginBottom: "8px" }} onClick={() => this.remCard(col.colID, card.card_id)} type="button">-</button>
-              <input type="text" placeholder = 'describe task' style = {{ width: "100%" }}></input>
             </div>
           ))}
-
+          
         </div>
       </div>
     ))
 
     const boardTabs = this.state.boardList.map((b, i) => (
-      <button key={b.board_i} className="cardBlock" onClick={() => {this.selected(i), console.log("")}} type="button">
-       
-        <input type="text" placeholder='name your board' style = {{ width: "100%" }}></input>
+      <button key={b.board_i} className="cardBlock" onClick={() => {this.selected(i)}} type="button">
+        <input type="text" placeholder='name your board' style = {{ width: "80%" }}></input>
       </button>
     ))
 
+    const loginWindow = (
+      <div>
+        <div>
+          <div style={{ fontWeight: 700, marginBottom: 10 }}>
+          </div>
+    
+          <input type="text" placeholder="username" value={this.state.username}onChange={(e) => this.setState({ username: e.target.value })}/>
+          <input type="text" placeholder="email" value={this.state.email} onChange={(e) => this.setState({ email: e.target.value })}/>
+          <input type="password" placeholder="password" value={this.state.password} onChange={(e) => this.setState({ password: e.target.value })}/>
+    
+          <div style={{ display: "flex", gap: 8, justifyContent: "flex-end", marginTop: 10 }}>
+            <button type="button" onClick={() => this.setState({ logInState: "" })}>close</button>
+            <button type="button" onClick={() => this.sbmtCredentials()}>enter</button>
+          </div>
+        </div>
+      </div>
+    )
+
     return (
       <div className="mainview">
-
         <div className="rightSide">
-          <button style={{ fontSize: BUTTON_FONT_SIZE }} onClick={this.addBoard}>+</button>
-          <button style={{ fontSize: BUTTON_FONT_SIZE }} onClick={() => {this.export()}}>export</button>
-          <button style={{ fontSize: BUTTON_FONT_SIZE }} onClick={() => {this.login()}}>login</button>
-          
           <div>
-            <text>log: {this.state.debugMsg} </text>
+          <div style = {{ fontSize: "150%", fontWeight: 300 }}>
+            Welcome {this.state.successMsg}
           </div>
+            <text style = {{ fontSize: BUTTON_FONT_SIZE}}>&gt;&gt;{this.state.debugMsg} </text>
+          </div>
+
+          <button style={{ fontSize: BUTTON_FONT_SIZE }} onClick={this.addBoard}>+</button>
+          <div>
+            <button style={{ fontSize: BUTTON_FONT_SIZE }} onClick={() => {this.export()}}>export</button>
+            <button style={{ fontSize: BUTTON_FONT_SIZE }} onClick={() => {this.login()}}>login</button>
+            <button style={{ fontSize: BUTTON_FONT_SIZE }} onClick={() => {this.signUp()}}>sign up</button>
+          </div>
+          <div className ="cardBlock" style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
+            {this.state.logInState ? loginWindow : null}
+          </div>          
           <div className="tabsView">
             {boardTabs}
           </div>
           
         </div>
-    
+        
         <div className="leftSide">
           <button style={{ fontSize: BUTTON_FONT_SIZE }} onClick={this.addCol}>+</button>
           <div style={{ fontWeight: 'bold', marginBottom: '12px' }}>

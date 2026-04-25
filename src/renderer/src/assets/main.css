@@ -9,44 +9,62 @@
 .rightSide {
   width: 260px;
   height: 100vh;             /* full height */
-  border-right: 1px solid #ddd;
-  padding: 12px;
+  border: 1px solid #d6d6d6;
+  padding: 4px 8px;
+  font-size: 12px;
+  margin-bottom: 6px;
   box-sizing: border-box;
   overflow-y: auto;          /* scroll when boards list grows */
   background: #fafafa;
 }
 
-.leftSide {
-  flex: 1;
-  height: 100vh;
-  overflow: auto;
-  padding: 12px;
-  box-sizing: border-box;
-  background: white;
-}
-
-.tabsView {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
 .tabRow {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-
-  border: 1px solid #e6e6e6;
-  border-radius: 10px;
-  padding: 8px;
-  background: white;
+  height: 38px;
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 10px;
 }
 
 .cardBlock {
-  border: 1px solid #ccc;
+  border: 1px solid #d6d6d6; 
+  border-radius: 8px;       
+  padding: 6px 8px;            
+  margin-top: 10px;      
+  box-shadow: 0 1px 2px rgba(209, 218, 255, 0.06);
+  cursor: grab;
+}
+
+.leftSide {
+  padding: 16px;
+}
+
+.tabsView {
+  height: 30px;
+  padding: 4px 8px;
+  font-size: 12px;
+  margin-bottom: 6px;
+}
+
+.task:active {
+  cursor: grabbing;
+}
+
+button { /* button style */
+  border: 1px solid #d6d6d6;
   border-radius: 8px;
-  background: white;
-  padding: 8px;
-  margin-top: 4px;
+  padding: 6px 10px;
+  background: #fff;
+  cursor: pointer;
+}
+button:hover {
+  background: #f6f6f6;
+}
+
+input { /* text field style */
+  box-sizing: border-box;
+  border: 1px solid #d6d6d6;
+  border-radius: 8px;
+  padding: 6px 8px;
+  font-size: 19px;
+  background: #fff;
 }
