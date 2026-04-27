@@ -9,42 +9,25 @@ export default class WebSocketLink {
   	port: string
   	socket: WebSocket
 
+	//contruct with the ipaddress and port, which should not change during run
 	constructor(ipAddress: string, port) {
 		this.ipAddress = ipAddress;
 		this.port = port;
 	}
 	
-	createConnnection(message: string) {
+	//create a new connection to websocket
+	createConnnection(message: string, callback, app) {
 		
+		//create socket
 		this.socket = new WebSocket("ws://" + this.ipAddress + ":" + this.port);
-		//console.log("test");
-		//const socket = new WebSocket("ws://192.168.1.60:3050");
 		
-		//socket.onopen = function(e) {
-		//	socket.send(`test electron`);
-		//	socket.close();
-		//}
-		
-		//this.socket.addEventListener("open", () => {
-		//	this.socket.send(`test electron`);
-			//this.socket.close();
-		//});
-		
-		this.settupWebSocket(message);
-		
-		
-
-		//return socket;
-		
-		//return "ab";
-		
-		
+		//send message
+		this.settupWebSocket(message, callback, app);
 		
 	}
 	
-	
-	
-	settupWebSocket(message: string) {
+	//code for setting up websocket and waiting for response
+	settupWebSocket(message: string, callback, app) {
 		
 		//settup event to send message once the websocket has open
 		this.socket.addEventListener("open", () => {
@@ -54,39 +37,22 @@ export default class WebSocketLink {
 		
 		//console.log("test");
 		
-		//settup event to send message once the websocket has open
+		//settup event to instructions once event is received
 		this.socket.addEventListener("message", (e) => {
-			//this.socket.send(`test electron`);
-			alert(e.data);
-			this.socket.close();
+		//call specific function to deal with response from server 
+		callback(e.data, app);
+		//close socket
+		this.socket.close();
 		});
 		
-		
-		
-		
 	}
 	
-	
-	
-	
-	
-	//settups event handlers for the websocket
-	
-	
-	sendMessage (message: string) { 
+	//events to run when sennding a message
+	sendMessage (message: string, callback, app) { 
 		
-		this.createConnnection(message);
+		this.createConnnection(message, callback, app);
 		
 	}
-	
-	closeConnection ( socket: WebSocket) {
-		
-		socket.close();
-		
-	}
-	
-
-	
 	
 		
 }

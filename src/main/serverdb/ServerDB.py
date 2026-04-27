@@ -2,8 +2,6 @@
 
 #import mariadb module for working mariadb database
 import mariadb
-#import json module for parsing json strings
-import json
 
 #using a dictionary as input, create a connection to the MariaDB server and return the result
 def startconnection(serverCR):
@@ -43,7 +41,7 @@ def insert(MDB, command):
 	
 #command to add a new user to database
 def add_user(MDB, username, email, password):
-	MDB["cursor"].execute('INSERT INTO Users (username, password, firstname, lastname) VALUES (%s, %s, %s)', (username, email, password))
+	MDB["cursor"].execute('INSERT INTO Users (username, email, password) VALUES (%s, %s, %s)', (username, email, password))
 	MDB["conn"].commit()
 	return MDB
 

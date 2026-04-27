@@ -1,22 +1,11 @@
 #Code for running a websocket server in python. Acts as a middle man between the typyscript client and the Mariadb server
 #This file and all files related to handeling the server should eventually be moved to a separate repository 
 
-
-
-
 import asyncio
 import websockets
 import json
 from serverdb import ServerDB
 from serverdb import Parshing
-
-#example of json strings to receive
-#x = '{ "command":"create_account", "code": { "username": "myusername", "password": "password1234", "firstname":"Myfirstnamev", "lastname":"Mylastname"}}'
-#x = '{ "command":"login", "code": { "username": "myusername", "password": "password1234"}}'
-#y = json.loads(x)
-
-
-
 
 serverCrFile = open("credentials.json")
 serverCR = json.load(serverCrFile)

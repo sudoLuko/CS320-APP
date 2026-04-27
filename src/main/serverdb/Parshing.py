@@ -1,6 +1,5 @@
 #Functions used for checking commands from the client and getting results for those commands.
 
-import json
 #from serverdb.ServerDB import ServerDB
 from serverdb import ServerDB
 
