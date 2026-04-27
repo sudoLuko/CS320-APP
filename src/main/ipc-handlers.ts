@@ -1,9 +1,11 @@
-import { ipcMain } from 'electron';
+import { ipcMain, dialog, BrowserWindow} from 'electron';
 import { BoardRepository } from './database/BoardRepo';
 import { ColumnRepository } from './database/ColumnRepo';
 import { CardRepository } from './database/CardRepo';
 import { exportToJSON } from './database/Export';
 import { Board, Column, Card } from '../shared/types';
+import fs from 'fs'
+import { error } from 'console';
 
 
 export function registerBoardHandlers() {
@@ -55,7 +57,47 @@ export function registerBoardHandlers() {
         return exportToJSON(boardID)
     })
 
+    // Cheat for exporting board state from UI and not from database
+    ipcMain.handle('board:exportJsonToFile', async(event, jsonString) => {
+        const win = BrowserWindow.fromWebContents(event.sender)
+        if (!win) return { success: false, error: 'window not found' }
+        try {
+            const result = await dialog.showSaveDialog(win, {
+                title: 'Export Board',
+                defaultPath: 'boardExport.json',
+                filters: [{ name: 'JSON', extensions: ['json'] }]
+            })
+            if (result.canceled) return { success: false, canceled: true }
+            fs.writeFileSync(result.filePath, jsonString)
+            return { success: true }
+        } catch (e) {
+            return { success: false, error: e instanceof Error ? e.message : String(e) }
+        }
+    })
 
+    // Export board from database to JSON
+    ipcMain.handle('board:exportBoardToFile', async(event, boardID) => {
+        const jsonString = exportToJSON(boardID)
+
+        const win = BrowserWindow.fromWebContents(event.sender)                                                                                             
+        if (!win) return { success: false, error: 'window not found' }
+        
+        try {
+            const result = await dialog.showSaveDialog(win, {
+                title: 'Export Board',                                                                                                                          
+                defaultPath: 'boardExport.json',
+                filters: [{ name: 'JSON', extensions: ['json'] }]                                                                                               
+            }) 
+            if (result.canceled) {
+                return { success: false, canceled: true }
+            }
+            fs.writeFileSync(result.filePath, jsonString)
+        } catch (e) {
+            if (e instanceof Error) {
+                return { success: false, error: e.message }
+            } 
+        }
+    })
 }
 
 export function registerColumnHandlers() {

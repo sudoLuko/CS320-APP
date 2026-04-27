@@ -24,6 +24,9 @@ export async function deleteBoard(boardID: number): Promise<void> {
   return window.electron.ipcRenderer.invoke('board:delete', boardID)
 }
 
+export async function exportToFile(boardID: number): Promise<{ success: boolean, canceled?: boolean, error?: string }> {
+  return window.electron.ipcRenderer.invoke('board:exportBoardToFile', boardID)
+}
 
 // Columns 
 export async function createColumn(title: string, position: number, boardID: number): Promise<Column> {
@@ -59,3 +62,4 @@ export async function updateCard(card: Card): Promise<void> {
 export async function deleteCard(cardID: number): Promise<void> {
   return window.electron.ipcRenderer.invoke('card:delete', cardID)
 }
+
