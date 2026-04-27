@@ -3,6 +3,8 @@ import ReactDOM from 'react-dom/client'
 import Board from './components/Board'
 import Column from './components/Column'
 import Card from './components/Card'
+import Accounts from './components/Accounts'
+import WebSocketLink from './components/WebSocketLink'
 
 import './assets/main.css';
 import { createBoard, getBoardByID, getBoardsByUser, updateBoard, deleteBoard } from './ipc'
@@ -56,6 +58,9 @@ type DisplayColProp = { // render board state with columns
   demoColumnID: number
   demoCardID: number
 }
+
+//create a single websocket descritpion, since you should only need one
+let newLink = new WebSocketLink("192.168.1.60", "3050");
 
 class MainView extends React.Component<MainViewProps, DisplayColProp> {
   board: Board 
@@ -390,11 +395,44 @@ class MainView extends React.Component<MainViewProps, DisplayColProp> {
           </div>
     
           <input type="text" placeholder="username" value={this.state.username}onChange={(e) => this.setState({ username: e.target.value })}/>
+          <input type="password" placeholder="password" value={this.state.password} onChange={(e) => this.setState({ password: e.target.value })}/>
+    
+          <div style={{ display: "flex", gap: 8, justifyContent: "flex-end", marginTop: 10 }}>
+            <button type="button" onClick={() => this.setState({ logInState: "", username: "", password: "", successMsg: "" })}>close</button>
+            <button type="button" onClick={() => this.sbmtCredentials()}>enter</button>
+          </div>
+        </div>
+      </div>
+    )
+    
+    const signUpWindow = (
+      <div>
+        <div>
+          <div style={{ fontWeight: 700, marginBottom: 10 }}>
+          </div>
+             
+          <input type="text" placeholder="username" value={this.state.username}onChange={(e) => this.setState({ username: e.target.value })}/>
           <input type="text" placeholder="email" value={this.state.email} onChange={(e) => this.setState({ email: e.target.value })}/>
           <input type="password" placeholder="password" value={this.state.password} onChange={(e) => this.setState({ password: e.target.value })}/>
     
           <div style={{ display: "flex", gap: 8, justifyContent: "flex-end", marginTop: 10 }}>
             <button type="button" onClick={() => this.setState({ logInState: "", username: "", email: "", password: "", successMsg: "" })}>close</button>
+            <button type="button" onClick={() => this.sbmtCredentials()}>enter</button>
+          </div>
+        </div>
+      </div>
+    )
+    
+   const loggedInWindow = (
+      <div>
+        <div>
+          <div style={{ fontWeight: 700, marginBottom: 10 }}>
+          </div>
+          <text style = {{ fontSize: BUTTON_FONT_SIZE}}>Your Username is:  </text> 
+          <text style = {{ fontSize: BUTTON_FONT_SIZE}}>Your Email is:  </text> 
+    
+          <div style={{ display: "flex", gap: 8, justifyContent: "flex-end", marginTop: 10 }}>
+            <button type="button" onClick={() => this.setState({ logInState: "", username: "", email: "", password: "", successMsg: "" })}>save</button>
             <button type="button" onClick={() => this.sbmtCredentials()}>enter</button>
           </div>
         </div>
@@ -418,7 +456,7 @@ class MainView extends React.Component<MainViewProps, DisplayColProp> {
             <button style={{ fontSize: BUTTON_FONT_SIZE }} onClick={() => {this.signUp()}}>sign up</button>
           </div>
           <div className ="cardBlock" style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
-            {this.state.logInState ? loginWindow : null}
+            {this.state.logInState == "login" ? loginWindow : (this.state.logInState == "signUp" ? signUpWindow : null) }
           </div>          
           <div className="tabsView">
             {boardTabs}

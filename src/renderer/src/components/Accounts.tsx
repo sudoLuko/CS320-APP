@@ -1,8 +1,7 @@
 export default class Accounts {
 	
-	firstName: string
-  	lastName: string
   	userName: string
+  	email: string
   	password: string
 
 	constructor(firstName: string, lastName: string, userName: string, password: string) {
