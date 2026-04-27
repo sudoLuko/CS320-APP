@@ -56,7 +56,11 @@ app.whenReady().then(() => {
 
   // Initialize database and IPC handlers
   const dbPath = join(app.getPath('userData'), 'kanflow.db')
-  DatabaseConnection.getInstance(dbPath)
+  const db = DatabaseConnection.getInstance(dbPath)
+  db.execute(
+    `INSERT OR IGNORE INTO users (id, createdAt, username, password) VALUES (1, ?, 'demo', 'demo')`,
+    [Date.now()]
+  )
   registerBoardHandlers()
   registerColumnHandlers()
   registerCardHandlers()
