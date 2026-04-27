@@ -5,7 +5,9 @@ import Column from './components/Column'
 import Card from './components/Card'
 
 import './assets/main.css';
-// import { createBoard, getBoardsByUser, createColumn, getColumnsByBoard, createCard, getCardsByColumn } from './ipc'
+import { createBoard, getBoardByID, getBoardsByUser, updateBoard, deleteBoard } from './ipc'
+import { createColumn, getColumnsByBoard, updateColumn, deleteColumn } from './ipc'
+import { createCard, getCardsByColumn, updateCard, deleteCard } from './ipc'
 
 //Constants for easier style prototyping
 const COLUMN_BORDER: string = "1px solid #d6d6d6";
@@ -28,6 +30,8 @@ const COLUMN_PADDING_RIGHT: string = COLUMN_PADDING;
 const COLUMN_PADDING_TOP: string = COLUMN_PADDING;
 const COLUMN_PADDING_BOTTOM: string = COLUMN_PADDING;
 
+const USER_ID = 1
+
 type MainViewProps = {
   board: Board
   selectedCol: Column
@@ -48,6 +52,9 @@ type DisplayColProp = { // render board state with columns
   password: string
   demo1: number
   demo2: number
+  demoBoardID: number
+  demoColumnID: number
+  demoCardID: number
 }
 
 class MainView extends React.Component<MainViewProps, DisplayColProp> {
@@ -75,7 +82,10 @@ class MainView extends React.Component<MainViewProps, DisplayColProp> {
       email: '',
       password: '',
       demo1: 0,
-      demo2: 0
+      demo2: 0,
+      demoBoardID: -1,
+      demoColumnID: -1,
+      demoCardID: -1
     }
   }
 
@@ -136,7 +146,6 @@ class MainView extends React.Component<MainViewProps, DisplayColProp> {
       currBoard.boards,
       currBoard.board_i
     )
-  
     boardArr[this.state.currI] = newBoard
   
     this.setState({
@@ -247,11 +256,15 @@ class MainView extends React.Component<MainViewProps, DisplayColProp> {
   }
   
   export = () => {
+    const demo = {
+      boardID: this.state.demoBoardID,
+      columnID: this.state.demoColumnID,
+      cardID: this.state.demoCardID
+    }
+  
     this.setState({
-      board: this.state.board,
-      boardList: this.state.boardList,
-      currI: this.state.currI,
-      debugMsg: "exporting..."
+      debugMsg: "exporting...",
+      successMsg: JSON.stringify(demo)
     })
   }
 
@@ -281,13 +294,13 @@ class MainView extends React.Component<MainViewProps, DisplayColProp> {
         this.setState({
           successMsg: this.state.username,
           demo1: 1,
-          debugMsg: "account created!" + this.state.username + this.state.email + this.state.password
+          debugMsg: "logged in!" + this.state.username + this.state.email + this.state.password
         })
       } else {
         this.setState({
           successMsg: this.state.username,
           demo1: 0,
-          debugMsg: "account already exists!" + this.state.username + this.state.email + this.state.password
+          debugMsg: "incorrect email or password!" + this.state.username + this.state.email + this.state.password
         })
       }
     }
@@ -296,13 +309,13 @@ class MainView extends React.Component<MainViewProps, DisplayColProp> {
         this.setState({
           successMsg: this.state.username,
           demo2: 1,
-          debugMsg: "logged in!" + this.state.username + this.state.email + this.state.password
+          debugMsg: "signed up!" + this.state.username + this.state.email + this.state.password
         }) 
       } else {
         this.setState({
           successMsg: this.state.username,
           demo2: 0,
-          debugMsg: "account does not exist!" + this.state.username + this.state.email + this.state.password
+          debugMsg: "account already exists!" + this.state.username + this.state.email + this.state.password
         })
       }
     }
@@ -318,17 +331,44 @@ class MainView extends React.Component<MainViewProps, DisplayColProp> {
     })
   }
 
+  dbBoard = async () => {
+    const board = await createBoard('Sprint 1', 'First sprint board', USER_ID)// use your user id here
+    this.setState({
+      demoBoardID: board.id,
+      debugMsg: "board=" + board.id
+    })
+  }
+
+  dbColumn = async () => {
+    if (this.state.demoBoardID === -1) return
+    const column = await createColumn('To Do', 1, this.state.demoBoardID)
+    this.setState({
+      demoColumnID: column.id,
+      debugMsg: "column=" + column.id
+    })
+  }
+
+  dbCard = async () => {
+    if (this.state.demoColumnID === -1) return
+    const card = await createCard('Fix login bug', 'Auth token expires too early', 1, this.state.demoColumnID)
+    this.setState({
+      demoCardID: card.id,
+      debugMsg: "card=" + card.id
+    })
+  }
+
   render() {
 
     // convert to JSX
     const coolCol = this.state.board.columns.map((col) => (
       <div className="tabRow" key={col.colID}>
         <input type="text" placeholder = 'name your column'style = {{ width: "100%" }}></input>
-        <div style={{ border: COLUMN_BORDER, width: COLUMN_WIDTH, height: COLUMN_HEIGHT, color: COLUMN_TEXT_COLOR, fontWeight: COLUMN_FONT_WEIGHT, backgroundColor: COLUMN_BACKGROUND_COLOR, fontSize: COLUMN_FONT_SIZE, paddingLeft: COLUMN_PADDING_LEFT, paddingRight: COLUMN_PADDING_RIGHT, paddingTop: COLUMN_PADDING_TOP, paddingBottom: COLUMN_PADDING_BOTTOM }}>
-          <button style={{ fontSize: "100%", marginBottom: "8px" }} onClick={() => this.createCard(col.colID)} type="button">+</button>
+        <div onDragOver={(e) => this.dragOver(e)} onDrop={() => this.drop(col.colID)} style={{ border: COLUMN_BORDER, width: COLUMN_WIDTH, height: COLUMN_HEIGHT, color: COLUMN_TEXT_COLOR, fontWeight: COLUMN_FONT_WEIGHT, backgroundColor: COLUMN_BACKGROUND_COLOR, fontSize: COLUMN_FONT_SIZE, paddingLeft: COLUMN_PADDING_LEFT, paddingRight: COLUMN_PADDING_RIGHT, paddingTop: COLUMN_PADDING_TOP, paddingBottom: COLUMN_PADDING_BOTTOM }}>
+          <button style={{ fontSize: "100%", marginBottom: "8px" }} onClick={() => {this.createCard(col.colID); this.dbCard()}} type="button">+</button>
           
           {col.cards.map((card) => (
-            <div draggable = "true" className="cardBlock" key={card.card_id} onDragStart={(e) => this.dragStart(e, card.card_id, col.colID)} onDragOver={(e) => this.dragOver(e)} onDrop={() => this.drop(col.colID)}>
+            <div draggable = "true" className="cardBlock" key={card.card_id} onDragStart={(e) => this.dragStart(e, card.card_id, col.colID)}>
+              <input type="text" placeholder='describe task' style = {{ width: "80%" }}></input>
               <button style={{ fontSize: "100%", marginBottom: "8px" }} onClick={() => this.remCard(col.colID, card.card_id)} type="button">-</button>
             </div>
           ))}
@@ -354,7 +394,7 @@ class MainView extends React.Component<MainViewProps, DisplayColProp> {
           <input type="password" placeholder="password" value={this.state.password} onChange={(e) => this.setState({ password: e.target.value })}/>
     
           <div style={{ display: "flex", gap: 8, justifyContent: "flex-end", marginTop: 10 }}>
-            <button type="button" onClick={() => this.setState({ logInState: "" })}>close</button>
+            <button type="button" onClick={() => this.setState({ logInState: "", username: "", email: "", password: "", successMsg: "" })}>close</button>
             <button type="button" onClick={() => this.sbmtCredentials()}>enter</button>
           </div>
         </div>
@@ -371,7 +411,7 @@ class MainView extends React.Component<MainViewProps, DisplayColProp> {
             <text style = {{ fontSize: BUTTON_FONT_SIZE}}>&gt;&gt;{this.state.debugMsg} </text>
           </div>
 
-          <button style={{ fontSize: BUTTON_FONT_SIZE }} onClick={this.addBoard}>+</button>
+          <button style={{ fontSize: BUTTON_FONT_SIZE }} onClick={() => {this.addBoard(); this.dbBoard()}}>+</button>
           <div>
             <button style={{ fontSize: BUTTON_FONT_SIZE }} onClick={() => {this.export()}}>export</button>
             <button style={{ fontSize: BUTTON_FONT_SIZE }} onClick={() => {this.login()}}>login</button>
@@ -387,7 +427,7 @@ class MainView extends React.Component<MainViewProps, DisplayColProp> {
         </div>
         
         <div className="leftSide">
-          <button style={{ fontSize: BUTTON_FONT_SIZE }} onClick={this.addCol}>+</button>
+          <button style={{ fontSize: BUTTON_FONT_SIZE }} onClick={() => { this.addCol(); this.dbColumn();}} >+</button>
           <div style={{ fontWeight: 'bold', marginBottom: '12px' }}>
           </div>
           <div style={{display: "flex"}}>
