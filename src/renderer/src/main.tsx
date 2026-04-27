@@ -8,6 +8,7 @@ import './assets/main.css';
 import { createBoard, getBoardByID, getBoardsByUser, updateBoard, deleteBoard } from './ipc'
 import { createColumn, getColumnsByBoard, updateColumn, deleteColumn } from './ipc'
 import { createCard, getCardsByColumn, updateCard, deleteCard } from './ipc'
+import { exportToFile } from './ipc'
 
 //Constants for easier style prototyping
 const COLUMN_BORDER: string = "1px solid #d6d6d6";
@@ -91,7 +92,7 @@ class MainView extends React.Component<MainViewProps, DisplayColProp> {
 
   addBoard = () => {
     const boardLength = this.state.boardList.length
-    const newBoard = new Board("" + boardLength, [], this.board.boards, boardLength)
+    const newBoard = new Board("", [], this.board.boards, boardLength)
     
     this.setState(({
       boardList: this.board.addBoard(newBoard).boards,
@@ -109,7 +110,7 @@ class MainView extends React.Component<MainViewProps, DisplayColProp> {
     } else {
       
       const colLength = this.state.board.columns.length
-      const newCol = new Column("" + colLength, colLength, [])
+      const newCol = new Column("", colLength, [])
 
       const currBoard = this.state.boardList.slice()
       const updatedBoard = currBoard[this.state.currI].addColumn(newCol)
@@ -255,17 +256,34 @@ class MainView extends React.Component<MainViewProps, DisplayColProp> {
     })
   }
   
-  export = () => {
-    const demo = {
-      boardID: this.state.demoBoardID,
-      columnID: this.state.demoColumnID,
-      cardID: this.state.demoCardID
+  export = async () => {
+    const b = this.state.board
+    if (!b) return
+
+    const payload = {
+      board: { title: b.board_name },
+      columns: b.columns.map((col, i) => ({
+        column: { title: col.column_name, position: i },
+        cards: col.cards.map((card, j) => ({
+          title: card.title || '',
+          description: card.description || '',
+          position: j
+        }))
+      }))
     }
-  
-    this.setState({
-      debugMsg: "exporting...",
-      successMsg: JSON.stringify(demo)
-    })
+
+    const result = await window.electron.ipcRenderer.invoke(
+      'board:exportJsonToFile',
+      JSON.stringify(payload, null, 2)
+    )
+
+    if (result.success) {
+      this.setState({ debugMsg: "Properly exported file to disk" })
+    } else if (result.canceled) {
+      this.setState({ debugMsg: "Export to disk cancelled" })
+    } else {
+      this.setState({ debugMsg: `Error upon export to disk: ${result.error}` })
+    }
   }
 
   login = () => {
@@ -362,13 +380,13 @@ class MainView extends React.Component<MainViewProps, DisplayColProp> {
     // convert to JSX
     const coolCol = this.state.board.columns.map((col) => (
       <div className="tabRow" key={col.colID}>
-        <input type="text" placeholder = 'name your column'style = {{ width: "100%" }}></input>
+        <input type="text" placeholder='name your column' defaultValue={col.column_name} onChange={(e) => { col.column_name = e.target.value }} style={{ width: "100%" }}></input>
         <div onDragOver={(e) => this.dragOver(e)} onDrop={() => this.drop(col.colID)} style={{ border: COLUMN_BORDER, width: COLUMN_WIDTH, height: COLUMN_HEIGHT, color: COLUMN_TEXT_COLOR, fontWeight: COLUMN_FONT_WEIGHT, backgroundColor: COLUMN_BACKGROUND_COLOR, fontSize: COLUMN_FONT_SIZE, paddingLeft: COLUMN_PADDING_LEFT, paddingRight: COLUMN_PADDING_RIGHT, paddingTop: COLUMN_PADDING_TOP, paddingBottom: COLUMN_PADDING_BOTTOM }}>
           <button style={{ fontSize: "100%", marginBottom: "8px" }} onClick={() => {this.createCard(col.colID); this.dbCard()}} type="button">+</button>
           
           {col.cards.map((card) => (
             <div draggable = "true" className="cardBlock" key={card.card_id} onDragStart={(e) => this.dragStart(e, card.card_id, col.colID)}>
-              <input type="text" placeholder='describe task' style = {{ width: "80%" }}></input>
+              <input type="text" placeholder='describe task' defaultValue={card.description} onChange={(e) => { card.description = e.target.value }} style={{ width: "80%" }}></input>
               <button style={{ fontSize: "100%", marginBottom: "8px" }} onClick={() => this.remCard(col.colID, card.card_id)} type="button">-</button>
             </div>
           ))}
@@ -379,7 +397,7 @@ class MainView extends React.Component<MainViewProps, DisplayColProp> {
 
     const boardTabs = this.state.boardList.map((b, i) => (
       <button key={b.board_i} className="cardBlock" onClick={() => {this.selected(i)}} type="button">
-        <input type="text" placeholder='name your board' style = {{ width: "80%" }}></input>
+        <input type="text" placeholder='name your board' defaultValue={b.board_name} onChange={(e) => { b.board_name = e.target.value }} style={{ width: "80%" }}></input>
       </button>
     ))
 
