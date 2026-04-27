@@ -20,7 +20,6 @@ from serverdb import Parshing
 
 serverCrFile = open("credentials.json")
 serverCR = json.load(serverCrFile)
-#print(serverCR["username"])
 
 (e, MDB) = ServerDB.startconnection(serverCR)
 
@@ -30,67 +29,22 @@ if e == 1:
 	print(MDB)
 	exit()
 
-#print(MDB)
-
-#print(MDB["cursor"])
-
-# if y["command"] == "create_account":
-	# (e, MDB) = Parshing.create_new_user(MDB, y["code"])
-	# if e == 4:
-		# print("MariaDB error, lost connect to MariaDB")
-		# exit()
-	# elif e == 1:
-		# print("The specfied username is alread in use. Please choose a different username")
-	# elif e == 0:
-		# print("Successfully added user to database")
-	# else:
-		# print("Error code not implemented")
-		
-# if y["command"] == "login":
-	# (e, MDB) = Parshing.login_to_user(MDB, y["code"])
-	# if e == 2:
-		# print("The specfied username does not exist")
-	# if e == 1:
-		# print("password does not match for user")
-	# elif e == 0:
-		# (MDB, firstname, lastname) = MDB
-		# print("Successfully logged into user")
-		# print("Firstname: " + firstname + ", Lastname: " + lastname)
-	# else:
-		# print("Error code not implemented")
-		
-
-#MDB = ServerDB.closeconnection(MDB)
-
-#print(MDB["cursor"])
-
 async def echo(websocket):
 	async for message in websocket:
 		global MDB
-		#print(message)
 		y = json.loads(message)
 		if y["command"] == "create_account":
 			(e, MDB) = Parshing.create_new_user(MDB, y["code"])
-			if e == 4:
-				print("MariaDB error, lost connect to MariaDB")
-				exit()
-			elif e == 1:
-				response = "The specfied username is alread in use. Please choose a different username"
-			elif e == 0:
-				response = "Successfully added user to database"
-			else:
-				print("Error code not implemented")	
+			response = { "response":e}
 		elif y["command"] == "login":
 			(e, MDB) = Parshing.login_to_user(MDB, y["code"])
-			if e == 2:
-				response = "The specfied username does not exist"
-			if e == 1:
-				response = "password does not match for user"
-			elif e == 0:
-				(MDB, firstname, lastname) = MDB
-				response = "Successfully logged into user\nFirstname: " + firstname + ", Lastname: " + lastname
+			if e == 0:
+				(MDB, email) = MDB
+				response = { "response":e, "email":email}
 			else:
-				print("Error code not implemented")
+				response = { "response":e}
+		#turn dictionary response into a string
+		response = json.dumps(response)
 		await websocket.send(response)
 		
 async def main():
