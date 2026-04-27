@@ -25,7 +25,7 @@ export class ColumnRepository {
     }
 
     public findByBoard(board_id: number): Column[] {
-        return this.db.query(`SELECT * FROM columns WHERE boardID = ?`, [board_id]) as Column[]
+        return this.db.query(`SELECT * FROM columns WHERE boardID = ? ORDER BY position`, [board_id]) as Column[]
     }
 
     public update(column: Column) {

@@ -26,7 +26,7 @@ export class CardRepository {
     }
 
     public findByColumn(column_id: number): Card[] {
-        return this.db.query(`SELECT * FROM cards WHERE columnID = ?`, [column_id]) as Card[]
+        return this.db.query(`SELECT * FROM cards WHERE columnID = ? ORDER BY position`, [column_id]) as Card[]
     }
 
     public update(card: Card) {
