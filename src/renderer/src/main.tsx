@@ -3,6 +3,8 @@ import ReactDOM from 'react-dom/client'
 import Board from './components/Board'
 import Column from './components/Column'
 import Card from './components/Card'
+import Accounts from './components/Accounts'
+import WebSocketLink from './components/WebSocketLink'
 
 import './assets/main.css';
 import { createBoard, getBoardByID, getBoardsByUser, updateBoard, deleteBoard } from './ipc'
@@ -58,6 +60,7 @@ type DisplayColProp = { // render board state with columns
   demoCardID: number
 }
 
+
 class MainView extends React.Component<MainViewProps, DisplayColProp> {
   board: Board 
   selectedCol: Column
@@ -88,6 +91,12 @@ class MainView extends React.Component<MainViewProps, DisplayColProp> {
       demoColumnID: -1,
       demoCardID: -1
     }
+    
+    //create a single WebSocketLink object, since ideally the location of the server would never change.
+    this.newLink = new WebSocketLink("192.168.1.60", "3050")
+    //create an account object private information such as password can remain hidden
+    this.myAccount = new Accounts("", "", "")
+    
   }
 
   addBoard = () => {
@@ -292,7 +301,7 @@ class MainView extends React.Component<MainViewProps, DisplayColProp> {
       boardList: this.state.boardList,
       currI: this.state.currI,
       logInState: "login",
-      debugMsg: "logging in..." + this.state.email + this.state.password
+      debugMsg: "logging in..."
     })
   }
 
@@ -302,40 +311,16 @@ class MainView extends React.Component<MainViewProps, DisplayColProp> {
       boardList: this.state.boardList,
       currI: this.state.currI,
       logInState: "signUp",
-      debugMsg: "signing up..." + this.state.email + this.state.password + this.state.username
+      debugMsg: "signing up..."
     })
   }
 
   sbmtCredentials = () => {
     if (this.state.logInState == "login") {
-      if (this.state.demo1 == 0) {
-        this.setState({
-          successMsg: this.state.username,
-          demo1: 1,
-          debugMsg: "logged in!" + this.state.username + this.state.email + this.state.password
-        })
-      } else {
-        this.setState({
-          successMsg: this.state.username,
-          demo1: 0,
-          debugMsg: "incorrect email or password!" + this.state.username + this.state.email + this.state.password
-        })
-      }
+		this.myAccount.login(this.state.username, this.state.password, this);
     }
-    if (this.state.logInState == "signUp") {
-      if (this.state.demo2 == 0) {
-        this.setState({
-          successMsg: this.state.username,
-          demo2: 1,
-          debugMsg: "signed up!" + this.state.username + this.state.email + this.state.password
-        }) 
-      } else {
-        this.setState({
-          successMsg: this.state.username,
-          demo2: 0,
-          debugMsg: "account already exists!" + this.state.username + this.state.email + this.state.password
-        })
-      }
+    else if (this.state.logInState == "signUp") {
+		this.myAccount.signUp(this.state.username, this.state.email, this.state.password, this);
     }
   }
   
@@ -408,6 +393,23 @@ class MainView extends React.Component<MainViewProps, DisplayColProp> {
           </div>
     
           <input type="text" placeholder="username" value={this.state.username}onChange={(e) => this.setState({ username: e.target.value })}/>
+          <input type="password" placeholder="password" value={this.state.password} onChange={(e) => this.setState({ password: e.target.value })}/>
+    
+          <div style={{ display: "flex", gap: 8, justifyContent: "flex-end", marginTop: 10 }}>
+            <button type="button" onClick={() => this.setState({ logInState: "", username: "", email: "", password: "", successMsg: "" })}>close</button>
+            <button type="button" onClick={() => this.sbmtCredentials()}>enter</button>
+          </div>
+        </div>
+      </div>
+    )
+    
+    const signUpWindow = (
+      <div>
+        <div>
+          <div style={{ fontWeight: 700, marginBottom: 10 }}>
+          </div>
+             
+          <input type="text" placeholder="username" value={this.state.username}onChange={(e) => this.setState({ username: e.target.value })}/>
           <input type="text" placeholder="email" value={this.state.email} onChange={(e) => this.setState({ email: e.target.value })}/>
           <input type="password" placeholder="password" value={this.state.password} onChange={(e) => this.setState({ password: e.target.value })}/>
     
@@ -418,6 +420,23 @@ class MainView extends React.Component<MainViewProps, DisplayColProp> {
         </div>
       </div>
     )
+    
+   const loggedInWindow = (
+      <div>
+        <div>
+          <div style={{ fontWeight: 700, marginBottom: 10 }}>
+          </div>
+          <p style = {{ fontSize: BUTTON_FONT_SIZE}}>User:  {this.state.username} </p> 
+          <p style = {{ fontSize: BUTTON_FONT_SIZE}}>Email: {this.state.email} </p> 
+    
+          <div style={{ display: "flex", gap: 8, justifyContent: "flex-end", marginTop: 10 }}>
+            <button type="button" onClick={() => {this.setState({ logInState: "", username: "", email: "", password: "", successMsg: "" }); this.myAccount.clearaccount()}}>logout</button>
+          </div>
+        </div>
+      </div>
+    )
+    
+    //const notLoggedIN = 
 
     return (
       <div className="mainview">
@@ -430,13 +449,18 @@ class MainView extends React.Component<MainViewProps, DisplayColProp> {
           </div>
 
           <button style={{ fontSize: BUTTON_FONT_SIZE }} onClick={() => {this.addBoard(); this.dbBoard()}}>+</button>
-          <div>
+          
+            {this.state.logInState != "loggedIn" ? (<div>
             <button style={{ fontSize: BUTTON_FONT_SIZE }} onClick={() => {this.export()}}>export</button>
             <button style={{ fontSize: BUTTON_FONT_SIZE }} onClick={() => {this.login()}}>login</button>
-            <button style={{ fontSize: BUTTON_FONT_SIZE }} onClick={() => {this.signUp()}}>sign up</button>
-          </div>
+            <button style={{ fontSize: BUTTON_FONT_SIZE }} onClick={() => {this.signUp()}}>sign up</button> 
+            </div>) :
+            (<div> 
+            <button style={{ fontSize: BUTTON_FONT_SIZE }} onClick={() => {this.export()}}>export</button> 
+            </div>) }
+         
           <div className ="cardBlock" style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
-            {this.state.logInState ? loginWindow : null}
+            {this.state.logInState == "login" ? loginWindow : (this.state.logInState == "signUp" ? signUpWindow : (this.state.logInState == "loggedIn" ? loggedInWindow : null)) }
           </div>          
           <div className="tabsView">
             {boardTabs}

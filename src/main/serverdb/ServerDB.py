@@ -2,10 +2,8 @@
 
 #import mariadb module for working mariadb database
 import mariadb
-#import json module for parsing json strings
-import json
-#import sys
 
+#using a dictionary as input, create a connection to the MariaDB server and return the result
 def startconnection(serverCR):
 	try:
 		conn = mariadb.connect(
@@ -41,20 +39,24 @@ def insert(MDB, command):
 	MDB["conn"].commit()
 	return MDB
 	
-def add_user(MDB, username, password, firstname, lastname):
-	MDB["cursor"].execute('INSERT INTO Users (username, password, firstname, lastname) VALUES (%s, %s, %s, %s)', (username, password, firstname, lastname))
+#command to add a new user to database
+def add_user(MDB, username, email, password):
+	MDB["cursor"].execute('INSERT INTO Users (username, email, password) VALUES (%s, %s, %s)', (username, email, password))
 	MDB["conn"].commit()
 	return MDB
 
+#command to check if username is in use in database
 def search_user(MDB, username):
 	MDB["cursor"].execute('SELECT * FROM Users WHERE username = %s', (username,))
 	return MDB
-	
+
+#command to delete username from database
 def delete_user(MDB, username):
 	MDB["cursor"].execute('DELETE FROM Users WHERE username = %s', (username,))
 	MDB["conn"].commit()
 	return MDB
 
+#check to make sure that there is still a connecction to MariaDB
 def is_connected(MDB):
     try:
        MDB["conn"].ping()
@@ -62,10 +64,10 @@ def is_connected(MDB):
         return False
     return True
 
-#Used for resetting KANFLOW database to default empty comfiguration.
-#Should not really be used, mostly here to keep track for the
-#needed reset commands
+#Used for resetting KANFLOW database to default empty comfiguration. Should not really be used, mostly here to keep track for the needed reset commands
+#Drop Users Table
+#Create new users table with username field, email field, and passwords field. username field is unique for each user
 def reset_KANFLOW(MDB):
 	MDB["cursor"].execute("DROP TABLE Users")
-	MDB["cursor"].execute("CREATE TABLE Users(nid int unsigned auto_increment, username nvarchar(128) not null, password nvarchar(128) not null, firstname nvarchar(128) not null, lastname nvarchar(128) not null, primary key(nid), unique key(username))")
+	MDB["cursor"].execute("CREATE TABLE Users(nid int unsigned auto_increment, username nvarchar(128) not null, email nvarchar(128) not null, password nvarchar(128) not null, primary key(nid), unique key(username)")
 	MDB["conn"].commit()
