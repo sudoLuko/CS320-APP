@@ -332,28 +332,28 @@ class MainView extends React.Component<MainViewProps, DisplayColProp> {
   }
 
   dbBoard = async () => {
-    const b = await createBoard("demoBoard", "demo", USER_ID) // use your user id here
+    const board = await createBoard('Sprint 1', 'First sprint board', USER_ID)// use your user id here
     this.setState({
-      demoBoardID: b.id,
-      debugMsg: "board=" + b.id
+      demoBoardID: board.id,
+      debugMsg: "board=" + board.id
     })
   }
 
   dbColumn = async () => {
     if (this.state.demoBoardID === -1) return
-    const c = await createColumn("demoCol", 1, this.state.demoBoardID)
+    const column = await createColumn('To Do', 1, this.state.demoBoardID)
     this.setState({
-      demoColumnID: c.id,
-      debugMsg: "column=" + c.id
+      demoColumnID: column.id,
+      debugMsg: "column=" + column.id
     })
   }
 
   dbCard = async () => {
     if (this.state.demoColumnID === -1) return
-    const c = await createCard("demoCard", "", 1, this.state.demoColumnID)
+    const card = await createCard('Fix login bug', 'Auth token expires too early', 1, this.state.demoColumnID)
     this.setState({
-      demoCardID: c.id,
-      debugMsg: "card=" + c.id
+      demoCardID: card.id,
+      debugMsg: "card=" + card.id
     })
   }
 
